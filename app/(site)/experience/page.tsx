@@ -1,5 +1,13 @@
 import { getEducation, getExperience } from "@/lib/content/profile";
 import { formatPeriod } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { site } from "@/lib/site";
+
+export const metadata = pageMetadata({
+  title: "Experience",
+  description: `Work experience and education of ${site.owner}.`,
+  path: "/experience",
+});
 
 // Field (work) first, then Origin (education), as on the journey map.
 export default function ExperiencePage() {

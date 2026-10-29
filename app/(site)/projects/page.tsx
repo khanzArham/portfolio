@@ -4,6 +4,14 @@ import {
   ProjectFilter,
 } from "@/components/dossier/project-filter";
 import { getDossiers, toSummary } from "@/lib/content/dossiers";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Work",
+  description:
+    "Project dossiers: the problem, method, evaluation and failure log behind each ML, AI and web project.",
+  path: "/projects",
+});
 
 export default function ProjectsPage() {
   const dossiers = getDossiers().map(toSummary);
