@@ -1,5 +1,13 @@
 import { getSkills } from "@/lib/content/profile";
 import { SKILL_CATEGORIES } from "@/lib/content/schemas";
+import { pageMetadata } from "@/lib/seo";
+import { site } from "@/lib/site";
+
+export const metadata = pageMetadata({
+  title: "Skills",
+  description: `Technical skills of ${site.owner}, grouped by category.`,
+  path: "/skills",
+});
 
 // Grouped by category. Linking skills to dossiers comes in Step 21.
 export default function SkillsPage() {

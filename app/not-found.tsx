@@ -1,5 +1,8 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/site-shell";
+
+export const metadata: Metadata = { title: "Page not found" };
 
 // Rendered for unknown URLs and notFound(), with the normal site chrome.
 export default function NotFound() {

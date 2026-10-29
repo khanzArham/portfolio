@@ -1,5 +1,12 @@
 import { ContactForm } from "@/components/contact/contact-form";
+import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
+
+export const metadata = pageMetadata({
+  title: "Contact",
+  description: `Contact ${site.owner} by message or email.`,
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { DossierCard } from "@/components/dossier/dossier-card";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getDossiers, toSummary } from "@/lib/content/dossiers";
+import { pageMetadata, personJsonLd } from "@/lib/seo";
 import { site } from "@/lib/site";
+
+export const metadata = pageMetadata({
+  description: `${site.owner}: ${site.positioning} Case files of ML, AI and web projects, with evaluations and failure logs.`,
+  path: "/",
+});
 
 const MAX_FEATURED = 3;
 
@@ -12,6 +19,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col gap-16">
+      <JsonLd data={personJsonLd} />
       <section aria-labelledby="hero-title" className="flex flex-col gap-6">
         <p className="font-mono text-sm text-muted">{site.role}</p>
         <h1
