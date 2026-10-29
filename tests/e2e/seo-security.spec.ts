@@ -91,3 +91,35 @@ test("robots.txt allows crawling and points to the sitemap", async ({
   expect(text).toContain("Allow: /");
   expect(text).toMatch(/Sitemap: https:\/\/.+\/sitemap\.xml/);
 });
+
+test.describe("share images", () => {
+  const ogImage = (page: import("@playwright/test").Page) =>
+    page.locator('meta[property="og:image"]').getAttribute("content");
+
+  test("pages use the site card; dossiers use their own", async ({ page }) => {
+    await page.goto("/projects");
+    expect(new URL((await ogImage(page)) ?? "").pathname).toBe(
+      "/opengraph-image",
+    );
+
+    await page.goto("/projects/fixture");
+    expect(new URL((await ogImage(page)) ?? "").pathname).toMatch(
+      /^\/projects\/fixture\/opengraph-image/,
+    );
+  });
+
+  for (const path of ["/", "/projects/fixture"]) {
+    test(`${path} card is a 1200x630 PNG`, async ({ page, request }) => {
+      await page.goto(path);
+      const url = new URL((await ogImage(page)) ?? "");
+      const response = await request.get(url.pathname + url.search);
+
+      expect(response.status()).toBe(200);
+      expect(response.headers()["content-type"]).toBe("image/png");
+      const png = await response.body();
+      // PNG IHDR chunk: width and height are big-endian at bytes 16 and 20.
+      expect(png.readUInt32BE(16)).toBe(1200);
+      expect(png.readUInt32BE(20)).toBe(630);
+    });
+  }
+});
