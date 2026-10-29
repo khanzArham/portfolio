@@ -1,0 +1,48 @@
+{
+  "summary": "Fixture evaluation. Made-up numbers that exercise every chart type.",
+  "metrics": [
+    { "name": "F1", "value": 0.5, "baseline": 0.4 },
+    { "name": "Latency", "value": 42, "unit": "ms" }
+  ],
+  "charts": [
+    {
+      "type": "confusion-matrix",
+      "labels": ["a", "b"],
+      "matrix": [
+        [5, 1],
+        [2, 4]
+      ],
+      "caption": "Fixture confusion matrix."
+    },
+    {
+      "type": "loss-curve",
+      "epochs": [1, 2, 3],
+      "series": [
+        { "name": "train", "values": [1, 0.6, 0.4] },
+        { "name": "validation", "values": [1.1, 0.8, 0.7] }
+      ],
+      "caption": "Fixture loss curve."
+    },
+    {
+      "type": "tradeoff-scatter",
+      "points": [
+        { "label": "small", "latencyMs": 10, "accuracy": 0.7 },
+        { "label": "large", "latencyMs": 40, "accuracy": 0.8 }
+      ],
+      "xLabel": "Latency (ms)",
+      "yLabel": "Accuracy",
+      "caption": "Fixture trade-off."
+    },
+    {
+      "type": "metric-table",
+      "columns": ["Model", "F1"],
+      "rows": [
+        ["baseline", 0.4],
+        ["fixture", 0.5]
+      ],
+      "caption": "Fixture metric table."
+    }
+  ],
+  "testSet": "Fixture: 12 made-up samples.",
+  "reproducible": { "repo": "https://github.com/khanzArham/portfolio" }
+}
