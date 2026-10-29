@@ -15,6 +15,9 @@ concurrency:
 
 env:
   NEXT_TELEMETRY_DISABLED: 1
+  # Build the "_" fixture dossiers so E2E can test them. Vercel never sets
+  # this, so fixtures stay off the live site.
+  CONTENT_FIXTURES: 1
 
 jobs:
   ci:

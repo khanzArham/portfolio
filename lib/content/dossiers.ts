@@ -140,19 +140,25 @@ function compareDossiers(a: Dossier, b: Dossier) {
 }
 
 export type CollectOptions = {
-  dir?: string;
   /** Include "_"-prefixed fixture files (validation and tests only). */
   includeFixtures?: boolean;
 };
 
+// Each file access names content/projects literally: Turbopack's file
+// tracing must see the folder, or it bundles the whole project into the
+// server output.
+const projectFile = (name: string) =>
+  path.join(process.cwd(), "content", "projects", name);
+
 /** Loads every dossier and returns all problems instead of throwing. */
 export function collectDossiers({
-  dir = PROJECTS_DIR,
   includeFixtures = false,
 }: CollectOptions = {}): { dossiers: Dossier[]; errors: string[] } {
-  if (!fs.existsSync(dir)) return { dossiers: [], errors: [] };
+  if (!fs.existsSync(path.join(process.cwd(), "content", "projects"))) {
+    return { dossiers: [], errors: [] };
+  }
 
-  const files = fs.readdirSync(dir);
+  const files = fs.readdirSync(path.join(process.cwd(), "content", "projects"));
   const isIncluded = (name: string) => includeFixtures || !name.startsWith("_");
   const mdxFiles = files.filter((f) => f.endsWith(".mdx") && isIncluded(f));
 
@@ -168,10 +174,10 @@ export function collectDossiers({
   }
 
   for (const fileName of mdxFiles) {
-    const evalPath = path.join(dir, fileName.replace(/\.mdx$/, ".eval.json"));
+    const evalPath = projectFile(fileName.replace(/\.mdx$/, ".eval.json"));
     const result = parseDossier({
       fileName,
-      source: fs.readFileSync(path.join(dir, fileName), "utf8"),
+      source: fs.readFileSync(projectFile(fileName), "utf8"),
       evaluationJson: fs.existsSync(evalPath)
         ? fs.readFileSync(evalPath, "utf8")
         : undefined,
@@ -195,12 +201,25 @@ export function collectDossiers({
   return { dossiers: dossiers.sort(compareDossiers), errors };
 }
 
+/**
+ * Fixtures render in development and in builds with CONTENT_FIXTURES=1
+ * (CI and E2E). Vercel never sets it, so fixtures stay off the live site.
+ */
+export function fixturesEnabled() {
+  return (
+    process.env.CONTENT_FIXTURES === "1" ||
+    process.env.NODE_ENV === "development"
+  );
+}
+
 let cache: Dossier[] | undefined;
 
-/** Public dossiers, newest first. Throws ContentError on invalid content. */
+/** Site dossiers, newest first. Throws ContentError on invalid content. */
 export function getDossiers(): Dossier[] {
   if (!cache) {
-    const { dossiers, errors } = collectDossiers();
+    const { dossiers, errors } = collectDossiers({
+      includeFixtures: fixturesEnabled(),
+    });
     if (errors.length) throw new ContentError(errors);
     cache = dossiers;
   }
@@ -209,4 +228,15 @@ export function getDossiers(): Dossier[] {
 
 export function getDossier(slug: string): Dossier | undefined {
   return getDossiers().find((d) => d.slug === slug);
+}
+
+/** The fields cards and the client-side filter need; no section text. */
+export type DossierSummary = Pick<
+  Dossier,
+  "slug" | "caseNumber" | "title" | "summary" | "status" | "period" | "tags"
+>;
+
+export function toSummary(d: Dossier): DossierSummary {
+  const { slug, caseNumber, title, summary, status, period, tags } = d;
+  return { slug, caseNumber, title, summary, status, period, tags };
 }
