@@ -13,7 +13,7 @@ export const site = {
   bio: [
     "I'm a final-year BS Computer Science student at the University of Lahore, focused on building AI-powered applications.",
     "In my final year project, CareerSyncAI, I integrate the Google Gemini LLM through prompt engineering to parse resumes into structured JSON, tailor CVs to job descriptions and run a multi-turn screening chatbot. I learned Python and FastAPI from scratch to deliver its backend on a 30-day timeline.",
-    "I'm also developing RoadGuard, a machine learning model that classifies road images as Good, Damaged or Cracked, and I completed a 10-week AI automation internship at Developers Hub.",
+    "I also completed a 10-week AI automation internship at Developers Hub, building and testing AI-driven automated workflows.",
     "How I work: I validate every feature end to end, keep regression checkpoints after each phase, and learn a new stack quickly when a project needs it.",
   ],
   email: "khanarhamzahid@gmail.com",

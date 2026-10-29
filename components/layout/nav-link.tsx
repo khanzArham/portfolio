@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentProps } from "react";
 
-// A section stays active on its child routes, e.g. Work on /projects/roadguard.
+// A section stays active on its child routes, e.g. Work on /projects/careersyncai.
 export function isActivePath(pathname: string | null, href: string) {
   if (!pathname) return false;
   return pathname === href || pathname.startsWith(`${href}/`);
