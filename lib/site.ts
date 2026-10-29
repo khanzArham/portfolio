@@ -3,6 +3,8 @@
 
 export const site = {
   owner: "Arham Zahid Khan",
+  // Production URL; becomes the custom domain in Step 23.
+  url: "https://portfolio-khanzarham.vercel.app",
   // Positioning from the plan; Step 14 writes the final hero and bio copy.
   role: "AI Engineer (in training)",
   positioning:
