@@ -1,13 +1,10 @@
 import { z } from "zod";
+import { TAGS } from "@/lib/content/tags";
+
+export { AI_TAGS, TAGS, type Tag } from "@/lib/content/tags";
 
 // Content schemas (plan §4). Every content file is validated against these
 // before the build, so invalid content never reaches production.
-
-export const TAGS = ["ML", "AI", "RAG", "Web", "Design"] as const;
-export type Tag = (typeof TAGS)[number];
-
-/** Dossiers with any of these tags are AI projects (plan §4.1-4.2). */
-export const AI_TAGS: readonly Tag[] = ["ML", "AI", "RAG"];
 
 export const STATUSES = ["shipped", "in-progress", "archived"] as const;
 
@@ -165,6 +162,8 @@ export const dossierFrontmatterSchema = z.strictObject({
     .optional(),
   media: z.array(mediaSchema).optional(),
   performance: z.array(performanceSchema).optional(),
+  /** Shown on the home page (up to three, newest first). */
+  featured: z.boolean().optional(),
 });
 
 export type DossierFrontmatter = z.infer<typeof dossierFrontmatterSchema>;

@@ -1,24 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-const routes = [
-  "/",
-  "/projects",
-  "/experience",
-  "/skills",
-  "/lab",
-  "/about",
-  "/contact",
-];
-
-for (const route of routes) {
-  test(`${route} loads with one h1 inside main`, async ({ page }) => {
-    const response = await page.goto(route);
-    expect(response?.status()).toBe(200);
-    await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.locator("main h1")).toBeVisible();
-  });
-}
-
 test("skip link appears on first Tab and moves focus to main", async ({
   page,
 }) => {

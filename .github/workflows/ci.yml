@@ -50,8 +50,12 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # Builds the "_" fixture dossiers so E2E can test them. Vercel never
+      # sets this, so fixtures stay off the live site.
       - name: Build
         run: npm run build
+        env:
+          CONTENT_FIXTURES: 1
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium

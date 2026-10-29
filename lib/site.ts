@@ -3,6 +3,11 @@
 
 export const site = {
   owner: "Arham Zahid Khan",
+  // Positioning from the plan; Step 14 writes the final hero and bio copy.
+  role: "AI Engineer (in training)",
+  positioning:
+    "AI engineer in training with a frontend and product design background.",
+  bio: ["Placeholder: the short bio and values are written in Step 14."],
   email: "khanarhamzahid@gmail.com",
   social: {
     github: "https://github.com/khanzArham",
