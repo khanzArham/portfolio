@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 3000;
+// `next start` and `next dev` also read PORT, so one variable moves both.
+const PORT = Number(process.env.PORT ?? 3000);
 const baseURL = `http://localhost:${PORT}`;
 const isCI = !!process.env.CI;
 
