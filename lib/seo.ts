@@ -11,6 +11,21 @@ type PageMetadataInput = {
   path: string;
   /** Keep the page out of search results (plan §10: unfinished Lab). */
   noIndex?: boolean;
+  /** The route has its own opengraph-image file (dossier cards). */
+  ownOgImage?: boolean;
+};
+
+/**
+ * The site share card (app/opengraph-image.tsx). A page's `openGraph` object
+ * replaces its parent's instead of merging, so pages list the card
+ * themselves. Listed images also beat a route's own opengraph-image file,
+ * so routes with their own card pass `ownOgImage` to leave this out.
+ */
+export const defaultOgImage = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: `${site.owner}, ${site.role}`,
 };
 
 /** Unique title, description, canonical URL and social tags per page. */
@@ -19,8 +34,11 @@ export function pageMetadata({
   description,
   path,
   noIndex,
+  ownOgImage,
 }: PageMetadataInput): Metadata {
   const fullTitle = title ? `${title} · ${site.owner}` : defaultTitle;
+  // Omit the key entirely: `images: undefined` also hides the route's card.
+  const images = ownOgImage ? undefined : [defaultOgImage];
   return {
     ...(title && { title }),
     description,
@@ -32,8 +50,14 @@ export function pageMetadata({
       siteName: site.owner,
       locale: "en_US",
       type: "website",
+      ...(images && { images }),
     },
-    twitter: { card: "summary_large_image", title: fullTitle, description },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description,
+      ...(images && { images }),
+    },
     ...(noIndex && { robots: { index: false, follow: true } }),
   };
 }

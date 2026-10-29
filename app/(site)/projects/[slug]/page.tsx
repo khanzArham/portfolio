@@ -20,6 +20,7 @@ export async function generateMetadata({
     title: `${dossier.title} (${dossier.caseNumber})`,
     description: dossier.summary,
     path: `/projects/${dossier.slug}`,
+    ownOgImage: true,
   });
 }
 
