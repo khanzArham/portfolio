@@ -1,10 +1,10 @@
 // @vitest-environment node
 import fs from "node:fs";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   collectDossiers,
-  getDossiers,
+  fixturesEnabled,
   MAX_EVAL_BYTES,
   parseDossier,
   PROJECTS_DIR,
@@ -145,11 +145,30 @@ describe("parseSections", () => {
 });
 
 describe("content folder", () => {
-  it("keeps fixtures off the public site", () => {
-    expect(getDossiers().map((d) => d.slug)).not.toContain("fixture");
-    expect(
-      collectDossiers({ includeFixtures: true }).dossiers.map((d) => d.slug),
-    ).toContain("fixture");
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("excludes fixtures unless asked", () => {
+    const slugs = (includeFixtures?: boolean) =>
+      collectDossiers({ includeFixtures }).dossiers.map((d) => d.slug);
+    expect(slugs()).not.toContain("fixture");
+    expect(slugs(true)).toContain("fixture");
+  });
+
+  // Independent of the shell running the tests: CI sets CONTENT_FIXTURES=1
+  // for its build and E2E steps.
+  it("enables fixtures only with CONTENT_FIXTURES=1 or in development", () => {
+    vi.stubEnv("CONTENT_FIXTURES", "");
+    vi.stubEnv("NODE_ENV", "production");
+    expect(fixturesEnabled()).toBe(false);
+
+    vi.stubEnv("CONTENT_FIXTURES", "1");
+    expect(fixturesEnabled()).toBe(true);
+
+    vi.stubEnv("CONTENT_FIXTURES", "");
+    vi.stubEnv("NODE_ENV", "development");
+    expect(fixturesEnabled()).toBe(true);
   });
 
   it("has valid profile data", () => {
