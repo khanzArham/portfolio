@@ -63,6 +63,9 @@ jobs:
       # Playwright starts the production server from the build above.
       - name: E2E tests
         run: npm run test:e2e
+        env:
+          # The contact form validates and rate-limits but never sends.
+          CONTACT_DRY_RUN: 1
 
       - name: Upload Playwright report
         if: failure()
