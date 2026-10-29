@@ -5,11 +5,17 @@ export const site = {
   owner: "Arham Zahid Khan",
   // Production URL; becomes the custom domain in Step 23.
   url: "https://portfolio-khanzarham.vercel.app",
-  // Positioning from the plan; Step 14 writes the final hero and bio copy.
+  // Hero and bio: every claim traces to the CV (Oct 2026). Target roles:
+  // AI engineer only (plan open question #1).
   role: "AI Engineer (in training)",
   positioning:
-    "AI engineer in training with a frontend and product design background.",
-  bio: ["Placeholder: the short bio and values are written in Step 14."],
+    "Final-year computer science student building LLM-powered applications, from prompt design and structured output to the APIs that ship them.",
+  bio: [
+    "I'm a final-year BS Computer Science student at the University of Lahore, focused on building AI-powered applications.",
+    "In my final year project, CareerSyncAI, I integrate the Google Gemini LLM through prompt engineering to parse resumes into structured JSON, tailor CVs to job descriptions and run a multi-turn screening chatbot. I learned Python and FastAPI from scratch to deliver its backend on a 30-day timeline.",
+    "I also completed a 10-week AI automation internship at Developers Hub, building and testing AI-driven automated workflows.",
+    "How I work: I validate every feature end to end, keep regression checkpoints after each phase, and learn a new stack quickly when a project needs it.",
+  ],
   email: "khanarhamzahid@gmail.com",
   social: {
     github: "https://github.com/khanzArham",

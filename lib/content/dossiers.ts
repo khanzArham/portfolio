@@ -26,7 +26,7 @@ export type Dossier = DossierFrontmatter & {
 };
 
 export type DossierInput = {
-  /** File name, e.g. "roadguard.mdx" or "_fixture.mdx". */
+  /** File name, e.g. "careersyncai.mdx" or "_fixture.mdx". */
   fileName: string;
   source: string;
   /** Raw contents of the matching <name>.eval.json, if it exists. */

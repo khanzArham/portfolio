@@ -1,15 +1,16 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { buildLlmsTxt, type LlmsDossier } from "@/lib/llms";
+import { site } from "@/lib/site";
 
 const dossiers: LlmsDossier[] = [
   {
-    slug: "roadguard",
+    slug: "sample-project",
     caseNumber: "CASE-004",
-    title: "RoadGuard",
-    summary: "Pothole detection from dashcam frames.",
+    title: "Sample Project",
+    summary: "A sample dossier summary.",
     status: "shipped",
-    stack: ["PyTorch", "FastAPI"],
+    stack: ["Python", "FastAPI"],
   },
   {
     slug: "order-tracker",
@@ -27,9 +28,7 @@ describe("buildLlmsTxt", () => {
   it("follows the llmstxt.org shape: H1, summary quote, sections", () => {
     const lines = text.split("\n");
     expect(lines[0]).toBe("# Arham Zahid Khan");
-    expect(lines[2]).toBe(
-      "> AI engineer in training with a frontend and product design background.",
-    );
+    expect(lines[2]).toBe(`> ${site.positioning}`);
     expect(text).toContain("## Sections");
     expect(text).toContain("## Dossiers");
     expect(text).toContain("## Contact");
@@ -37,7 +36,7 @@ describe("buildLlmsTxt", () => {
 
   it("lists every dossier with link, summary, status and stack", () => {
     expect(text).toContain(
-      "- [RoadGuard (CASE-004)](https://portfolio-khanzarham.vercel.app/projects/roadguard): Pothole detection from dashcam frames. Status: Shipped. Stack: PyTorch, FastAPI.",
+      "- [Sample Project (CASE-004)](https://portfolio-khanzarham.vercel.app/projects/sample-project): A sample dossier summary. Status: Shipped. Stack: Python, FastAPI.",
     );
     expect(text).toContain("[Order Tracker (CASE-002)]");
     expect(text).toContain("Status: In progress.");

@@ -6,7 +6,7 @@ import { isActivePath } from "@/components/layout/nav-link";
 import { site } from "@/lib/site";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/projects/roadguard",
+  usePathname: () => "/projects/sample-project",
 }));
 
 describe("Header", () => {
@@ -60,7 +60,7 @@ describe("Header", () => {
 describe("isActivePath", () => {
   it.each([
     ["/projects", "/projects", true],
-    ["/projects/roadguard", "/projects", true],
+    ["/projects/sample-project", "/projects", true],
     ["/projects-archive", "/projects", false],
     ["/", "/projects", false],
     [null, "/projects", false],

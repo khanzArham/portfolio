@@ -1,11 +1,15 @@
 import type { z } from "zod";
 import type { educationSchema } from "@/lib/content/schemas";
 
-// Placeholder until Step 14 adds the real degree and dates.
+// Source: Arham_Zahid_Khan_CV_Contour (Oct 2026).
 export const education = [
   {
-    institution: "Placeholder university",
-    degree: "Placeholder degree",
-    period: { start: "2022-09", end: "present" },
+    institution: "University of Lahore",
+    degree: "BS Computer Science",
+    period: { start: "2023-09", end: "present" },
+    details: [
+      "Final year (7th semester).",
+      "Relevant coursework: Object-Oriented Programming, Data Structures & Algorithms, Database Management Systems, Web Development, Operating Systems, Computer Networks.",
+    ],
   },
 ] satisfies z.input<typeof educationSchema>;
