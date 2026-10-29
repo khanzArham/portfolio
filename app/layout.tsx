@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { ThemeProvider } from "next-themes";
@@ -18,6 +20,9 @@ const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
 });
+
+// Set to "1" by Vercel during its builds (preview and production).
+const isVercel = process.env.VERCEL === "1";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -41,6 +46,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           {children}
         </ThemeProvider>
+        {/* Cookieless, no personal data (plan §7.4). Rendered only in Vercel
+            builds: elsewhere the scripts 404 and add console errors. */}
+        {isVercel && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );
