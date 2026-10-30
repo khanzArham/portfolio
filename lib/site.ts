@@ -8,13 +8,14 @@ export const site = {
   // Hero and bio: every claim traces to the CV (Oct 2026). Target roles:
   // AI engineer only (plan open question #1).
   role: "AI Engineer (in training)",
+  // Only what is done today. CareerSyncAI is in design and documentation
+  // (development not started, 2026-10-30), so it is described as a plan.
   positioning:
-    "Final-year computer science student building LLM-powered applications, from prompt design and structured output to the APIs that ship them.",
+    "Final-year computer science student training as an AI engineer: prompt contracts, LLM evaluation suites and AI automation workflows.",
   bio: [
-    "I'm a final-year BS Computer Science student at the University of Lahore, focused on building AI-powered applications.",
-    "In my final year project, CareerSyncAI, I integrate the Google Gemini LLM through prompt engineering to parse resumes into structured JSON, tailor CVs to job descriptions and run a multi-turn screening chatbot. I learned Python and FastAPI from scratch to deliver its backend on a 30-day timeline.",
-    "I also completed a 10-week AI automation internship at Developers Hub, building and testing AI-driven automated workflows.",
-    "How I work: I validate every feature end to end, keep regression checkpoints after each phase, and learn a new stack quickly when a project needs it.",
+    "I'm a final-year BS Computer Science student at the University of Lahore, training to become an AI engineer.",
+    "In a 10-week AI automation and prompt engineering internship at Developers Hub, I built and tested LLM workflows with routing, JSON validation and retries, wrote prompt contracts and Claude skills with explicit output schemas and fallbacks, and built evaluation suites for edge cases, malformed inputs and prompt-injection risks.",
+    "My final year project, CareerSyncAI, is in its design and documentation phase: a two-sided recruitment platform that will use the Google Gemini and Claude APIs to parse resumes, tailor CVs to job descriptions and screen candidates.",
   ],
   email: "khanarhamzahid@gmail.com",
   social: {

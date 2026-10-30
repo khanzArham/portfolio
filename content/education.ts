@@ -1,7 +1,7 @@
 import type { z } from "zod";
 import type { educationSchema } from "@/lib/content/schemas";
 
-// Source: Arham_Zahid_Khan_CV_Contour (Oct 2026).
+// Source: Arham_Zahid_Khan_Generic_Software_Developer_CV_v2 (Oct 2026).
 export const education = [
   {
     institution: "University of Lahore",
