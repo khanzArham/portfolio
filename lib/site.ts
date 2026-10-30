@@ -24,6 +24,14 @@ export const site = {
   },
 } as const;
 
+/**
+ * Projects under way without a published dossier, shown honestly on the
+ * journey map's Build station. Remove an entry once its dossier ships.
+ */
+export const projectsInProgress = [
+  { name: "CareerSyncAI", status: "In design · final year project" },
+] as const;
+
 export type NavItem = {
   label: string;
   href: string;

@@ -31,3 +31,29 @@
     outline-offset: 2px;
   }
 }
+
+/*
+ * Journey map path (plan §5.3): the fill grows as the map scrolls through
+ * the viewport. Pure CSS scroll-driven animation, no JavaScript. Browsers
+ * without animation-timeline, and visitors who prefer reduced motion, see
+ * the full static line instead.
+ */
+@keyframes journey-fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .journey-path-fill {
+      transform-origin: top;
+      animation: journey-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 60%;
+    }
+  }
+}
