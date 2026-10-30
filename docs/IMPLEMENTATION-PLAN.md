@@ -13,7 +13,7 @@
 - GitHub account, with GitHub CLI logged in.
 - Vercel account, signed in with GitHub.
 - VS Code with ESLint, Prettier, and Tailwind CSS IntelliSense.
-- Python 3.10 or newer (only needed for the RoadGuard eval export in Step 15).
+- Python 3.10 or newer (only needed for the evaluation export in Step 15).
 - Git identity set on the machine, and default branch set to main.
 
 ## Working rules for every step
@@ -243,17 +243,19 @@
 
 ---
 
-## Step 15: RoadGuard dossier (first full case file)
+## Step 15: First full case file
+
+> **Changed 2026-10-29:** RoadGuard was removed as the first case file because it is not the owner's project. **Decided 2026-10-30:** CareerSyncAI is the first case file (open question 6). It has no evaluation yet, so Part A builds one in its repo.
 
 **Goal:** One complete dossier with real evaluation data. This validates the whole template.
 
-**Part A, in the RoadGuard repo:**
+**Part A, in the project's own repo:**
 - Write an export script that reads the saved predictions, labels, and training log, and writes the evaluation JSON in the format from plan section 4.3.
 - Check at least one metric by hand against the notebook output.
 
 **Part B, in the portfolio repo:**
 - Add the exported evaluation file to the content folder.
-- Write the RoadGuard dossier with all required fields. The failure log must name a specific pattern of errors, not a general statement.
+- Write the dossier with all required fields. The failure log must name a specific pattern of errors, not a general statement.
 - Add a link to the code or notebook that produced the numbers.
 
 **Done when:** Content validation passes, the dossier renders its metric table (charts come in Step 16), and the failure log is specific.
@@ -272,7 +274,7 @@
 
 **Tests:** Each chart shows its caption and table toggle with fixture data.
 
-**Done when:** RoadGuard's charts render in both themes, the toggles work with the keyboard, and reduced motion disables animation.
+**Done when:** The first dossier's charts render in both themes, the toggles work with the keyboard, and reduced motion disables animation.
 
 ---
 
@@ -398,7 +400,7 @@ The RAG project and the Job Matcher each get their own repo and plan. They conne
 - Initial commit from the scaffold
 - Step 2 through Step 7: setup, tooling, theme, layout, and CI
 - Step 8 through Step 13: content model, pages, contact, SEO, OG images, and llms.txt
-- Step 14 and Step 15: content and the RoadGuard dossier
+- Step 14 and Step 15: content and the first full dossier
 - Step 16 through Step 22: charts, journey map, dossier tabs, dossiers, micro-AI, palette, and quality
 - Step 23: launch and v1.0.0 tag
 

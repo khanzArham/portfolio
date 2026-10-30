@@ -125,7 +125,7 @@ Rules:
 ## 5. Visual and Interaction Design
 
 ### 5.1 Design direction: "Field Notebook" with equal Light and Dark themes
-- **Light theme ("Warm paper"):** Warm paper background, ink-dark text, one accent color (road-sign yellow, linked to RoadGuard).
+- **Light theme ("Warm paper"):** Warm paper background, ink-dark text, one accent color (road-sign yellow).
 - **Dark theme ("Night field"):** Same identity in dark form: deep warm slate background (not pure black), paper-toned text, and the same accent tuned for contrast on dark surfaces.
 - **Theme policy:** Both themes have equal priority. Every page, chart, dossier, and component is designed and reviewed in both.
 - **Detection:** System theme detection through `next-themes` (`attribute="class"`, `enableSystem`, `defaultTheme="system"`). The visitor can override it, and the choice is remembered. `suppressHydrationWarning` on the root `html` element prevents a theme flash on load.
@@ -385,7 +385,7 @@ This gives visible AI capability at launch, with no backend and no API cost.
 
 ### 9.1 Branching
 - `main` is always deployable.
-- Feature branches per section or project (`feat/dossier-ui`, `content/roadguard`).
+- Feature branches per section or project (`feat/dossier-ui`, `content/careersyncai`).
 - Pull requests required, even for solo work, to keep history clean and reviewable.
 
 ### 9.2 Pipeline (GitHub Actions)
@@ -428,8 +428,8 @@ Every PR gets a Vercel preview URL. Use it to review on mobile and in both theme
 |---|---|---|
 | Hero copy and positioning | Owner | To write |
 | Origin station (BS CS, University of Lahore) | Owner | To write |
-| Build station: RoadGuard dossier | Owner + project repo | To write (highest priority ML evidence) |
-| RoadGuard eval data (confusion matrix, loss curves, metric table) | Training and eval scripts (export to `*.eval.json`) | To export |
+| Build station: first full case file (see open question 6) | Owner + project repo | To write (highest priority AI evidence) |
+| First dossier eval data (confusion matrix, loss curves, metric table) | Training and eval scripts (export to `*.eval.json`) | To export |
 | Build station: CareerSyncAI (FYP) dossier | Owner + project docs | To write |
 | Build station: Order Tracker app | Owner | To write |
 | Field station: NIAIS internship | Owner | To write |
@@ -459,7 +459,7 @@ Every PR gets a Vercel preview URL. Use it to review on mobile and in both theme
 - Home, Projects index, About, Contact (Server Action), Experience, Skills pages (static, no animation)
 - `/llms.txt` route implementation
 - Resume download, SEO basics, sitemap, dynamic OG image generator
-- First dossier fully written (RoadGuard) with evaluation metrics table to validate the template
+- First dossier fully written (see open question 6) with evaluation metrics table to validate the template
 
 **Exit criteria:** Recruiter and AI-ready static site, live, with one complete dossier.
 
@@ -535,7 +535,7 @@ Every PR gets a Vercel preview URL. Use it to review on mobile and in both theme
 3. Resume: which version is the current master?
 4. Contact method: form, direct email, or both?
 5. Micro-AI model: which quantized embedding model to use, after measuring size and quality on a sample of dossier text?
-6. Which dossier carries the first full set of evaluation charts? (Proposed: RoadGuard.)
+6. Which dossier carries the first full set of evaluation charts? (RoadGuard removed on 2026-10-29: it is not the owner's project. Decided 2026-10-30: CareerSyncAI, with a new evaluation of its Gemini resume parser.)
 
 ---
 
