@@ -10,7 +10,8 @@ const vercelLive = isPreview ? " https://vercel.live" : "";
 // nothing a visitor submits is ever rendered on the site.
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}${vercelLive}`,
+  // 'wasm-unsafe-eval': the opt-in search model compiles WebAssembly.
+  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${isDev ? " 'unsafe-eval'" : ""}${vercelLive}`,
   `style-src 'self' 'unsafe-inline'${vercelLive}`,
   `img-src 'self' blob: data:${isPreview ? " https://vercel.live https://vercel.com" : ""}`,
   `font-src 'self'${isPreview ? " https://vercel.live https://assets.vercel.com" : ""}`,

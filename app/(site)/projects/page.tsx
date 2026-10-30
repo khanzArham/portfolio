@@ -3,6 +3,7 @@ import {
   DossierGrid,
   ProjectFilter,
 } from "@/components/dossier/project-filter";
+import { SiteSearch } from "@/components/search/site-search";
 import { getDossiers, toSummary } from "@/lib/content/dossiers";
 import { pageMetadata } from "@/lib/seo";
 
@@ -21,6 +22,7 @@ export default function ProjectsPage() {
       <h1 className="font-display text-4xl font-semibold tracking-tight">
         Work
       </h1>
+      <SiteSearch />
       {dossiers.length === 0 ? (
         <p className="text-muted">Project dossiers are being prepared.</p>
       ) : (
