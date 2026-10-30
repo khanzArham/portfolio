@@ -3,6 +3,12 @@ import { expect, test } from "@playwright/test";
 // Step 16 on the fixture dossier (built with CONTENT_FIXTURES=1 in CI).
 const URL = "/projects/fixture";
 
+// Charts live in the Evaluation tab (Step 18).
+async function openEvaluation(page: import("@playwright/test").Page) {
+  await page.goto(URL);
+  await page.getByRole("tab", { name: "Evaluation" }).click();
+}
+
 const captions = [
   "Fixture confusion matrix.",
   "Fixture loss curve.",
@@ -11,7 +17,7 @@ const captions = [
 ];
 
 test("every chart has its caption and text summary", async ({ page }) => {
-  await page.goto(URL);
+  await openEvaluation(page);
   for (const caption of captions) {
     const figure = page.getByRole("figure", { name: caption });
     await expect(figure).toBeVisible();
@@ -23,7 +29,7 @@ test("every chart has its caption and text summary", async ({ page }) => {
 });
 
 test("charts render as SVG and the matrix as a table", async ({ page }) => {
-  await page.goto(URL);
+  await openEvaluation(page);
   await expect(
     page.locator('[data-chart="loss-curve"] svg').first(),
   ).toBeVisible();
@@ -36,7 +42,7 @@ test("charts render as SVG and the matrix as a table", async ({ page }) => {
 });
 
 test("the data table toggle works with the keyboard", async ({ page }) => {
-  await page.goto(URL);
+  await openEvaluation(page);
   const figure = page.getByRole("figure", { name: "Fixture loss curve." });
   const toggle = figure.getByRole("button", { name: "Data table" });
 
@@ -56,7 +62,7 @@ for (const reducedMotion of ["reduce", "no-preference"] as const) {
     test.use({ reducedMotion });
 
     test("charts follow the motion preference", async ({ page }) => {
-      await page.goto(URL);
+      await openEvaluation(page);
       await expect(
         page.locator('[data-chart="loss-curve"] svg').first(),
       ).toBeVisible();

@@ -36,19 +36,22 @@ test("fixture dossier shows every section", async ({ page }) => {
   await page.goto("/projects/fixture");
   await expect(page.getByText("CASE-000")).toBeVisible();
 
-  const headings = page.locator("main h2");
-  await expect(headings).toHaveText([
+  // Sections are tabs on desktop (Step 18); Stack moved into the header.
+  await expect(page.getByRole("tab")).toHaveText([
     "Brief",
     "Data",
     "Method",
     "Evaluation",
     "Failure Log",
     "Outcome",
-    "Stack",
   ]);
+  await expect(page.getByRole("definition").getByText("Python")).toBeVisible();
+
+  await page.getByRole("tab", { name: "Failure Log" }).click();
   await expect(
     page.getByRole("heading", { level: 3, name: "Fixture failure entry" }),
   ).toBeVisible();
+  await page.getByRole("tab", { name: "Evaluation" }).click();
   await expect(page.getByRole("table", { name: "Key metrics" })).toBeVisible();
 });
 
