@@ -142,6 +142,8 @@ function compareDossiers(a: Dossier, b: Dossier) {
 export type CollectOptions = {
   /** Include "_"-prefixed fixture files (validation and tests only). */
   includeFixtures?: boolean;
+  /** Include `draft: true` dossiers (validation, development and CI). */
+  includeDrafts?: boolean;
 };
 
 // Each file access names content/projects literally: Turbopack's file
@@ -153,6 +155,7 @@ const projectFile = (name: string) =>
 /** Loads every dossier and returns all problems instead of throwing. */
 export function collectDossiers({
   includeFixtures = false,
+  includeDrafts = false,
 }: CollectOptions = {}): { dossiers: Dossier[]; errors: string[] } {
   if (!fs.existsSync(path.join(process.cwd(), "content", "projects"))) {
     return { dossiers: [], errors: [] };
@@ -183,7 +186,10 @@ export function collectDossiers({
         : undefined,
     });
     errors.push(...result.errors);
-    if (result.dossier) dossiers.push(result.dossier);
+    // Drafts are validated like any dossier but stay off the live site.
+    if (result.dossier && (includeDrafts || !result.dossier.draft)) {
+      dossiers.push(result.dossier);
+    }
   }
 
   for (const key of ["slug", "caseNumber"] as const) {
@@ -202,8 +208,9 @@ export function collectDossiers({
 }
 
 /**
- * Fixtures render in development and in builds with CONTENT_FIXTURES=1
- * (CI and E2E). Vercel never sets it, so fixtures stay off the live site.
+ * Fixtures and drafts render in development and in builds with
+ * CONTENT_FIXTURES=1 (CI and E2E). Vercel never sets it, so neither reaches
+ * the live site.
  */
 export function fixturesEnabled() {
   return (
@@ -219,6 +226,7 @@ export function getDossiers(): Dossier[] {
   if (!cache) {
     const { dossiers, errors } = collectDossiers({
       includeFixtures: fixturesEnabled(),
+      includeDrafts: fixturesEnabled(),
     });
     if (errors.length) throw new ContentError(errors);
     cache = dossiers;

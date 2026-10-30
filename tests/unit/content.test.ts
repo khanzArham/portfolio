@@ -206,3 +206,20 @@ describe("skills as evidence", () => {
     expect(warnings).toEqual([expect.stringContaining('"Rust"')]);
   });
 });
+
+describe("draft dossiers", () => {
+  const slugs = (options: Parameters<typeof collectDossiers>[0]) =>
+    collectDossiers(options).dossiers.map((d) => d.slug);
+
+  it("are validated but kept off the public site", () => {
+    expect(slugs({})).not.toContain("order-tracker");
+    expect(slugs({ includeDrafts: true })).toEqual(
+      expect.arrayContaining([
+        "order-tracker",
+        "smart-property-rental",
+        "brick-breaker",
+      ]),
+    );
+    expect(collectDossiers({ includeDrafts: true }).errors).toEqual([]);
+  });
+});

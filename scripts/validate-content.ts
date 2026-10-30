@@ -8,7 +8,7 @@ import { collectDossiers } from "@/lib/content/dossiers";
 import { checkSkillCoverage, collectProfile } from "@/lib/content/profile";
 
 function main(): void {
-  const all = collectDossiers({ includeFixtures: true });
+  const all = collectDossiers({ includeFixtures: true, includeDrafts: true });
   const publicDossiers = collectDossiers().dossiers;
   const profile = collectProfile();
   const errors = [...all.errors, ...profile.errors];

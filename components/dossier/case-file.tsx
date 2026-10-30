@@ -72,6 +72,15 @@ export function CaseFile({ dossier }: { dossier: Dossier }) {
 
   return (
     <article className="case-file-enter flex flex-col gap-10">
+      {dossier.draft && (
+        <p
+          role="note"
+          className="rounded-md border border-danger px-4 py-3 text-sm text-danger"
+        >
+          Draft: not published. Sections marked TODO wait for the owner&apos;s
+          facts.
+        </p>
+      )}
       <header className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
