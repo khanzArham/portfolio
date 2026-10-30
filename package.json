@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm run validate:content",
+    "prebuild": "npm run validate:content && npm run build:search",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -17,7 +17,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "lighthouse": "npx --yes @lhci/cli@0.15.1 autorun",
-    "validate:content": "tsx scripts/validate-content.ts"
+    "validate:content": "tsx scripts/validate-content.ts",
+    "build:search": "tsx scripts/build-search-index.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^6.0.2",
