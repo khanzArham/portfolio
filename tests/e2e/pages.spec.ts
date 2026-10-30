@@ -71,7 +71,10 @@ test("tag filter updates the list and the URL", async ({ page }) => {
   await ml.click();
   await expect(page).toHaveURL(/\?tag=ML$/);
   await expect(ml).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("status")).toContainText("tagged ML");
+  // The page also has the search panel's status, so pick the filter's.
+  await expect(
+    page.getByRole("status").filter({ hasText: "tagged ML" }),
+  ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Fixture Dossier" }),
   ).toBeVisible();
