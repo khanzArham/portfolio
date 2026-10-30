@@ -10,9 +10,14 @@ export const STATUSES = ["shipped", "in-progress", "archived"] as const;
 
 const nonEmpty = z.string().trim().min(1, { error: "Must not be empty" });
 
-const yearMonth = z
-  .string()
-  .regex(/^\d{4}-(0[1-9]|1[0-2])$/, { error: "Use YYYY-MM, e.g. 2025-03" });
+// A month (2025-03), or just a year (2025) when only the year is known, so
+// no month is ever invented. YAML reads an unquoted 2025 as a number.
+const yearMonth = z.preprocess(
+  (value) => (typeof value === "number" ? String(value) : value),
+  z.string().regex(/^\d{4}(-(0[1-9]|1[0-2]))?$/, {
+    error: "Use YYYY-MM (e.g. 2025-03), or YYYY when only the year is known",
+  }),
+);
 
 // YAML turns an unquoted 2026-10-29 into a Date; accept both forms.
 const isoDate = z.preprocess(
@@ -164,6 +169,11 @@ export const dossierFrontmatterSchema = z.strictObject({
   performance: z.array(performanceSchema).optional(),
   /** Shown on the home page (up to three, newest first). */
   featured: z.boolean().optional(),
+  /**
+   * Awaiting the owner's facts (e.g. a real failure log). Validated, shown
+   * in development and CI with a banner, never published.
+   */
+  draft: z.boolean().optional(),
 });
 
 export type DossierFrontmatter = z.infer<typeof dossierFrontmatterSchema>;
