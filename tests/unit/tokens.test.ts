@@ -12,7 +12,7 @@ it("lib/tokens.ts matches the light values in styles/tokens.css", () => {
   // Match the block openings: the file's header comment mentions both names.
   const theme = css.slice(css.indexOf("@theme {"), css.indexOf("\n.dark {"));
   const fromCss = Object.fromEntries(
-    [...theme.matchAll(/--color-([a-z-]+):\s*(#[0-9a-f]{6})/gi)].map(
+    [...theme.matchAll(/--color-([a-z0-9-]+):\s*(#[0-9a-f]{6})/gi)].map(
       ([, name, value]) => [name, value.toLowerCase()],
     ),
   );
