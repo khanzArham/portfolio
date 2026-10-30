@@ -11,11 +11,11 @@ export const site = {
   // Only what is done today. CareerSyncAI is in design and documentation
   // (development not started, 2026-10-30), so it is described as a plan.
   positioning:
-    "Final-year computer science student training as an AI engineer, with hands-on AI automation work and an LLM-powered recruitment platform in design.",
+    "Final-year computer science student training as an AI engineer: prompt contracts, LLM evaluation suites and AI automation workflows.",
   bio: [
     "I'm a final-year BS Computer Science student at the University of Lahore, training to become an AI engineer.",
-    "I completed a 10-week AI automation internship at Developers Hub, building and testing AI-driven automated workflows.",
-    "My final year project, CareerSyncAI, is in its design and documentation phase: a two-sided recruitment platform that will use the Google Gemini LLM to parse resumes, tailor CVs to job descriptions and screen candidates.",
+    "In a 10-week AI automation and prompt engineering internship at Developers Hub, I built and tested LLM workflows with routing, JSON validation and retries, wrote prompt contracts and Claude skills with explicit output schemas and fallbacks, and built evaluation suites for edge cases, malformed inputs and prompt-injection risks.",
+    "My final year project, CareerSyncAI, is in its design and documentation phase: a two-sided recruitment platform that will use the Google Gemini and Claude APIs to parse resumes, tailor CVs to job descriptions and screen candidates.",
   ],
   email: "khanarhamzahid@gmail.com",
   social: {
