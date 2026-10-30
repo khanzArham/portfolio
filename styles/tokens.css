@@ -35,6 +35,38 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/*
+ * Chart tokens (plan §5.1: chart colors come from theme tokens). Plain
+ * variables, not @theme: Tailwind only outputs @theme values that a utility
+ * class uses, and charts read these directly. Series slots are the dataviz
+ * reference palette's first three, validated on these surfaces: all-pairs
+ * CVD ΔE 9.2 light / 9.4 dark, normal-vision 24.0 / 20.9. Light orange and
+ * aqua are under 3:1, so every chart also ships labels or a table view.
+ */
+:root {
+  --color-chart-1: #2a78d6;
+  --color-chart-2: #eb6834;
+  --color-chart-3: #1baf7a;
+  --color-chart-grid: #d9d1c0; /* recessive hairline, 1.32:1 */
+  /* Sequential blue, low -> high. Dark mode reverses it so low values
+     recede into the dark surface. */
+  --color-seq-1: #cde2fb;
+  --color-seq-2: #9ec5f4;
+  --color-seq-3: #6da7ec;
+  --color-seq-4: #3987e5;
+  --color-seq-5: #256abf;
+  --color-seq-6: #184f95;
+  --color-seq-7: #0d366b;
+  /* Text on each step: near-black on 100-400, white on 500-700 (>= 4.5:1). */
+  --color-on-seq-1: #1d1b18;
+  --color-on-seq-2: #1d1b18;
+  --color-on-seq-3: #1d1b18;
+  --color-on-seq-4: #1d1b18;
+  --color-on-seq-5: #ffffff;
+  --color-on-seq-6: #ffffff;
+  --color-on-seq-7: #ffffff;
+}
+
 .dark {
   --color-paper: #1f1d1a;
   --color-surface: #282521;
@@ -45,6 +77,24 @@
   --color-on-accent: #1f1d1a; /* 10.27:1 on accent */
   --color-success: #7bc48a; /* 8.09:1 */
   --color-danger: #f08c80; /* 7.02:1 */
+  --color-chart-1: #3987e5;
+  --color-chart-2: #d95926;
+  --color-chart-3: #199e70;
+  --color-chart-grid: #3a3631; /* 1.40:1 */
+  --color-seq-1: #0d366b;
+  --color-seq-2: #184f95;
+  --color-seq-3: #256abf;
+  --color-seq-4: #3987e5;
+  --color-seq-5: #6da7ec;
+  --color-seq-6: #9ec5f4;
+  --color-seq-7: #cde2fb;
+  --color-on-seq-1: #ffffff;
+  --color-on-seq-2: #ffffff;
+  --color-on-seq-3: #ffffff;
+  --color-on-seq-4: #1f1d1a;
+  --color-on-seq-5: #1f1d1a;
+  --color-on-seq-6: #1f1d1a;
+  --color-on-seq-7: #1f1d1a;
 }
 
 /* Motion (plan §5.5): UI feedback never exceeds 500ms. */
