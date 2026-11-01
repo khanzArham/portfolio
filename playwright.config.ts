@@ -16,7 +16,21 @@ export default defineConfig({
     baseURL,
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      testIgnore: /visual\.spec\.ts$/,
+    },
+    // Screenshot baselines are Linux-only: run inside the Playwright image
+    // (CI does), refresh with `npm run test:visual:update`.
+    {
+      name: "visual",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: /visual\.spec\.ts$/,
+    },
+  ],
+  snapshotPathTemplate: "{testDir}/__screenshots__/{arg}-{platform}{ext}",
   // CI tests the production build (built in the step before E2E); locally,
   // reuse or start the dev server for a fast feedback loop.
   webServer: {

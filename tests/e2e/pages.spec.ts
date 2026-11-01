@@ -1,17 +1,5 @@
 import { expect, test } from "@playwright/test";
-
-// Needs the "_fixture" dossier: CI builds with CONTENT_FIXTURES=1 and the
-// dev server always includes fixtures.
-const routes = [
-  "/",
-  "/projects",
-  "/projects/fixture",
-  "/experience",
-  "/skills",
-  "/lab",
-  "/about",
-  "/contact",
-];
+import { routes } from "./routes";
 
 test.describe("smoke", () => {
   for (const route of routes) {
