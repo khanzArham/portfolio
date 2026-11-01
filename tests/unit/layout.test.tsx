@@ -7,11 +7,12 @@ import { site } from "@/lib/site";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/projects/sample-project",
+  useRouter: () => ({ push: () => {} }),
 }));
 
 describe("Header", () => {
   it("links each nav item to its route", () => {
-    render(<Header />);
+    render(<Header dossiers={[]} />);
     const nav = screen.getByRole("navigation", { name: "Main" });
 
     const expected = {
@@ -29,12 +30,12 @@ describe("Header", () => {
   });
 
   it("keeps the Lab out of navigation until it has content", () => {
-    render(<Header />);
+    render(<Header dossiers={[]} />);
     expect(screen.queryByRole("link", { name: "Lab" })).not.toBeInTheDocument();
   });
 
   it("links the name home and the Contact button to /contact", () => {
-    render(<Header />);
+    render(<Header dossiers={[]} />);
     expect(screen.getByRole("link", { name: site.owner })).toHaveAttribute(
       "href",
       "/",
@@ -46,7 +47,7 @@ describe("Header", () => {
   });
 
   it("marks the current section with aria-current", () => {
-    render(<Header />);
+    render(<Header dossiers={[]} />);
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute(
       "aria-current",
       "page",

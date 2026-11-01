@@ -1,10 +1,14 @@
 import Link from "next/link";
+import {
+  CommandPalette,
+  type PaletteDossier,
+} from "@/components/command-palette/command-palette";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { NavLink } from "@/components/layout/nav-link";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { contactItem, site, visibleNavItems } from "@/lib/site";
 
-export function Header() {
+export function Header({ dossiers }: { dossiers: PaletteDossier[] }) {
   return (
     <header className="border-b border-ink/10">
       <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-4 px-4">
@@ -25,6 +29,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <CommandPalette dossiers={dossiers} />
           <ThemeToggle />
           <Link
             href={contactItem.href}

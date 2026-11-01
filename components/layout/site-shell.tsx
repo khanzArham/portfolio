@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { getDossiers } from "@/lib/content/dossiers";
 
 /** Skip link, header, main landmark and footer around every site page. */
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -12,7 +13,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      <Header />
+      <Header
+        dossiers={getDossiers().map(({ slug, caseNumber, title, tags }) => ({
+          slug,
+          caseNumber,
+          title,
+          tags,
+        }))}
+      />
       {/* tabIndex lets the skip link move focus here in every browser. */}
       <main
         id="main"
