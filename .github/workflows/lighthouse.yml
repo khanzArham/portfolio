@@ -1,0 +1,104 @@
+name: Lighthouse
+
+# Plan §9: Lighthouse CI against the preview deployment, with the §7.1
+# budgets from lighthouserc.json. Vercel reports previews as a commit
+# status (not a GitHub deployment), so the job runs on the pull request,
+# waits for that status, then tests the branch's preview URL.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  statuses: read
+
+concurrency:
+  group: lighthouse-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  VERCEL_PROJECT: portfolio
+  VERCEL_TEAM: khanzarham
+
+jobs:
+  lighthouse:
+    # Required status check on main (branch protection).
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # Actions are pinned to commit SHAs; the comment names the release.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Wait for the Vercel preview
+        id: preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          for _ in $(seq 1 60); do
+            # Newest status first.
+            state=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/statuses" \
+              --jq '[.[] | select(.context == "Vercel")][0].state // "missing"')
+            case "$state" in
+              success) break ;;
+              failure | error) echo "::error::Vercel preview failed"; exit 1 ;;
+            esac
+            sleep 10
+          done
+          [ "$state" = success ] || { echo "::error::No Vercel preview after 10 minutes"; exit 1; }
+
+          # Vercel's branch alias: lowercase, other characters become "-".
+          slug=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g')
+          host="$VERCEL_PROJECT-git-$slug-$VERCEL_TEAM"
+          # Longer names are shortened with a hash, which is not predictable.
+          [ ${#host} -le 63 ] || { echo "::error::Branch name too long for a predictable preview URL"; exit 1; }
+          echo "url=https://$host.vercel.app" >> "$GITHUB_OUTPUT"
+
+      # Previews sit behind Vercel Authentication; the automation bypass
+      # header lets Lighthouse through. Vercel also marks every preview
+      # noindex, so the crawlability audit is skipped: the rest of SEO counts.
+      - name: Collect
+        env:
+          BASE_URL: ${{ steps.preview.outputs.url }}
+          BYPASS: ${{ secrets.BYPASS }}
+        run: |
+          # Without it Lighthouse would score Vercel's login page instead.
+          [ -n "$BYPASS" ] || { echo "::error::BYPASS secret is not set"; exit 1; }
+          urls=""
+          for path in / /projects /experience /skills /lab /about /contact; do
+            urls="$urls --url=$BASE_URL$path"
+          done
+          npx --yes @lhci/cli@0.15.1 collect --no-lighthouserc $urls \
+            --numberOfRuns=3 \
+            --settings.skipAudits=is-crawlable \
+            --settings.extraHeaders="{\"x-vercel-protection-bypass\":\"$BYPASS\"}"
+
+      - name: Assert budgets
+        run: npx --yes @lhci/cli@0.15.1 assert
+
+      # Reports record the request headers; remove the secret before upload.
+      - name: Redact reports
+        if: always()
+        env:
+          BYPASS: ${{ secrets.BYPASS }}
+        run: |
+          [ -d .lighthouseci ] || exit 0
+          node -e '
+            const fs = require("fs");
+            const secret = process.env.BYPASS;
+            if (!secret) process.exit(0);
+            for (const f of fs.readdirSync(".lighthouseci")) {
+              const p = ".lighthouseci/" + f;
+              fs.writeFileSync(p, fs.readFileSync(p, "utf8").split(secret).join("[redacted]"));
+            }'
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 7
+          if-no-files-found: ignore
