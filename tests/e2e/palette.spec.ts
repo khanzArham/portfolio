@@ -24,6 +24,9 @@ test("opens with the shortcut, filters, and navigates with the keyboard", async 
 test("arrow keys move the selection across groups", async ({ page }) => {
   await page.goto("/");
   await page.keyboard.press(shortcut);
+  await expect(
+    page.getByRole("combobox", { name: "Command palette" }),
+  ).toBeFocused();
   await page.keyboard.type("skills");
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/skills$/);

@@ -7,9 +7,12 @@ import { defaultTitle } from "@/lib/seo";
 import { site } from "@/lib/site";
 import "./globals.css";
 
+// Performance (Step 22): every display heading is semibold, so Fraunces
+// loads one static weight instead of the full variable range.
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
+  weight: "600",
 });
 
 const plexSans = IBM_Plex_Sans({
@@ -17,10 +20,13 @@ const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
 });
 
+// Mono is only for small metadata labels: not worth a preload that
+// competes with the first paint on slow connections.
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
+  preload: false,
 });
 
 // Set to "1" by Vercel during its builds (preview and production).

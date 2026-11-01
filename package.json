@@ -15,7 +15,9 @@
     "format:check": "prettier --check .",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=chromium",
+    "test:visual": "playwright test --project=visual",
+    "test:visual:update": "tsx scripts/update-visual-baselines.ts",
     "lighthouse": "npx --yes @lhci/cli@0.15.1 autorun",
     "validate:content": "tsx scripts/validate-content.ts",
     "build:search": "tsx scripts/build-search-index.ts"

@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import { CommandPalette } from "@/components/command-palette/command-palette";
+import { PaletteLauncher as CommandPalette } from "@/components/command-palette/palette-launcher";
 import { SkillEvidence } from "@/components/skills/skill-evidence";
 import type { DossierSummary } from "@/lib/content/dossiers";
 import { isPaletteShortcut, matchesQuery } from "@/lib/palette";
@@ -82,7 +82,10 @@ describe("CommandPalette", () => {
     render(<CommandPalette dossiers={dossiers} />);
     await user.click(screen.getByRole("button", { name: "Search" }));
 
-    const dialog = screen.getByRole("dialog", { name: "Command palette" });
+    // The dialog is loaded on demand, so it appears a moment after the click.
+    const dialog = await screen.findByRole("dialog", {
+      name: "Command palette",
+    });
     await user.keyboard("order");
     expect(within(dialog).getByText("Order Tracker")).toBeInTheDocument();
     expect(within(dialog).queryByText("Brick Breaker")).not.toBeInTheDocument();
@@ -99,7 +102,7 @@ describe("CommandPalette", () => {
     trigger.focus();
 
     await user.keyboard("{Control>}k{/Control}");
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();

@@ -4,9 +4,9 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import type { DossierSummary } from "@/lib/content/dossiers";
-import { isPaletteShortcut, matchesQuery } from "@/lib/palette";
+import { matchesQuery } from "@/lib/palette";
 import type { LoadedIndex, SearchResult } from "@/lib/search/client";
 import { contactItem, site, visibleNavItems } from "@/lib/site";
 
@@ -25,44 +25,35 @@ const themes = [
 
 type CopyState = "idle" | "copied" | "failed";
 
-const noop = () => () => {};
-const isMac = () => /Mac|iPhone|iPad/.test(navigator.userAgent);
-
 const itemClass =
   "flex cursor-pointer items-center justify-between gap-3 rounded-md px-3 py-2 text-sm data-[selected=true]:bg-surface";
 const groupClass =
   "px-1 pb-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:text-muted";
 
 /**
- * Cmd/Ctrl + K palette (plan §6.6): pages, dossiers, actions, and keyword
- * results from the Step 20 index. Radix Dialog traps focus, closes on
- * Escape and returns focus to the trigger. The index loads on first search.
+ * The palette dialog (plan §6.6): pages, dossiers, actions, and keyword
+ * results from the Step 20 index. Loaded on demand by PaletteLauncher, so
+ * cmdk and Radix Dialog are not in the initial page JavaScript. Radix traps
+ * focus and closes on Escape; focus then returns to the launcher button.
  */
-export function CommandPalette({ dossiers }: { dossiers: PaletteDossier[] }) {
+export default function PaletteDialog({
+  dossiers,
+  open,
+  onOpenChange: setOpen,
+  returnFocusTo,
+}: {
+  dossiers: PaletteDossier[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  returnFocusTo: RefObject<HTMLButtonElement | null>;
+}) {
   const router = useRouter();
   const { setTheme } = useTheme();
-  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searchFailed, setSearchFailed] = useState(false);
   const [copy, setCopy] = useState<CopyState>("idle");
   const index = useRef<Promise<LoadedIndex> | null>(null);
-  // "Ctrl K" on the server and during hydration, the real key afterwards.
-  const shortcut = useSyncExternalStore(
-    noop,
-    () => (isMac() ? "⌘K" : "Ctrl K"),
-    () => "Ctrl K",
-  );
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (!isPaletteShortcut(event)) return;
-      event.preventDefault();
-      setOpen((wasOpen) => !wasOpen);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
 
   const term = query.trim();
 
@@ -129,37 +120,15 @@ export function CommandPalette({ dossiers }: { dossiers: PaletteDossier[] }) {
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Trigger asChild>
-        <button
-          type="button"
-          aria-keyshortcuts="Control+K Meta+K"
-          className="inline-flex h-10 items-center gap-2 rounded-md px-2.5 text-sm text-ink transition-colors duration-fast ease-standard hover:bg-surface md:border md:border-ink/15"
-        >
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            className="size-5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-          >
-            <circle cx="11" cy="11" r="6.5" />
-            <path d="M16 16l4.5 4.5" />
-          </svg>
-          <span className="sr-only md:not-sr-only">Search</span>
-          <kbd
-            aria-hidden="true"
-            className="hidden font-mono text-xs text-muted md:inline"
-          >
-            {shortcut}
-          </kbd>
-        </button>
-      </Dialog.Trigger>
-
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-paper/80 backdrop-blur-sm" />
-        <Dialog.Content className="fixed top-[12vh] left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-lg border border-ink/15 bg-surface-raised shadow-lg">
+        <Dialog.Content
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            returnFocusTo.current?.focus();
+          }}
+          className="fixed top-[12vh] left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-lg border border-ink/15 bg-surface-raised shadow-lg"
+        >
           <Dialog.Title className="sr-only">Command palette</Dialog.Title>
           <Dialog.Description className="sr-only">
             Search pages, dossiers and actions. Use the arrow keys to move and

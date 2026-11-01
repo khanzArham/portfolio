@@ -1,21 +1,30 @@
-import { z } from "zod";
+import * as z from "zod/mini";
+
+// Performance (Step 22): zod/mini keeps the same validation in a much
+// smaller client bundle, and jitless stops Zod from trying `new Function`,
+// which the CSP blocks (script-src has no 'unsafe-eval').
+z.config({ jitless: true });
 
 // Shared by the form (client-side checks) and the server action (the
 // authoritative check).
 export const contactSchema = z.object({
   name: z
     .string()
-    .trim()
-    .min(2, { error: "Enter your name" })
-    .max(100, { error: "Keep your name under 100 characters" }),
+    .check(
+      z.trim(),
+      z.minLength(2, { error: "Enter your name" }),
+      z.maxLength(100, { error: "Keep your name under 100 characters" }),
+    ),
   email: z
     .email({ error: "Enter a valid email address" })
-    .max(200, { error: "Keep the email under 200 characters" }),
+    .check(z.maxLength(200, { error: "Keep the email under 200 characters" })),
   message: z
     .string()
-    .trim()
-    .min(10, { error: "Write at least 10 characters" })
-    .max(5000, { error: "Keep the message under 5,000 characters" }),
+    .check(
+      z.trim(),
+      z.minLength(10, { error: "Write at least 10 characters" }),
+      z.maxLength(5000, { error: "Keep the message under 5,000 characters" }),
+    ),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
