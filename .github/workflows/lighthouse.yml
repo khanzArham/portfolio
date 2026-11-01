@@ -57,7 +57,8 @@ jobs:
           echo "url=https://$host.vercel.app" >> "$GITHUB_OUTPUT"
 
       # Previews sit behind Vercel Authentication; the automation bypass
-      # header lets Lighthouse through. Vercel also marks every preview
+      # header lets Lighthouse through, and the cookie it sets covers the
+      # robots.txt fetch, which sends no extra headers. Vercel also marks every preview
       # noindex, so the crawlability audit is skipped: the rest of SEO counts.
       - name: Collect
         env:
@@ -73,7 +74,7 @@ jobs:
           npx --yes @lhci/cli@0.15.1 collect --no-lighthouserc $urls \
             --numberOfRuns=3 \
             --settings.skipAudits=is-crawlable \
-            --settings.extraHeaders="{\"x-vercel-protection-bypass\":\"$BYPASS\"}"
+            --settings.extraHeaders="{\"x-vercel-protection-bypass\":\"$BYPASS\",\"x-vercel-set-bypass-cookie\":\"true\"}"
 
       - name: Assert budgets
         run: npx --yes @lhci/cli@0.15.1 assert
