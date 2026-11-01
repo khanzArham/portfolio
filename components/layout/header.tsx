@@ -1,8 +1,6 @@
 import Link from "next/link";
-import {
-  CommandPalette,
-  type PaletteDossier,
-} from "@/components/command-palette/command-palette";
+import type { PaletteDossier } from "@/components/command-palette/command-palette";
+import { PaletteLauncher } from "@/components/command-palette/palette-launcher";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { NavLink } from "@/components/layout/nav-link";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
@@ -29,7 +27,7 @@ export function Header({ dossiers }: { dossiers: PaletteDossier[] }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <CommandPalette dossiers={dossiers} />
+          <PaletteLauncher dossiers={dossiers} />
           <ThemeToggle />
           <Link
             href={contactItem.href}
