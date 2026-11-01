@@ -10,6 +10,18 @@ All notable changes to this site. Dates are YYYY-MM-DD.
   immediately; semantic search is opt-in and runs entirely in the visitor's
   browser. Nothing typed is sent to a server, and the page makes no
   third-party requests.
+- **Quality gates (Step 22).** Every pull request now runs Lighthouse
+  against its Vercel preview with the plan §7.1 budgets, axe checks on every
+  page in light and dark themes, and screenshot comparisons of home,
+  projects and a dossier with charts at mobile and desktop widths.
+
+### Changed
+
+- **Faster first load (Step 22).** The command palette and mobile menu load
+  on demand instead of with every page, Fraunces ships one weight instead of
+  the full variable range, and the contact form validates with `zod/mini`.
+- **Fixed:** the contact page no longer triggers a Content Security Policy
+  error (Zod tried to compile validators with `new Function`).
 
 ### Micro-AI measurements (plan §6.6, Step 20)
 
