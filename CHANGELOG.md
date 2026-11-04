@@ -25,6 +25,36 @@ All notable changes to this site. Dates are YYYY-MM-DD.
 
 ### Changed
 
+- **New look: "Software & AI Engineer Studio".** Slate neutrals with a
+  sky (light) or cyan (dark) accent and indigo stack badges, about 90% neutral.
+  1px borders replace shadows. Inter for text and headings, JetBrains Mono for
+  metadata. Every colour pair is AA: sky-600 and slate-500 were deepened
+  slightly in light mode to pass on all surfaces. Share images use the same
+  look.
+- **Hero.** The role is now "Software & AI Engineer", with an availability
+  pill. A "Download Resume" button appears once `public/resume.pdf` exists.
+- **Project cards** look like small terminal windows (window controls and
+  the file path): status,
+  up to six stack badges ("+N more" beyond that), then, pinned to the bottom
+  so cards in a row line up, the first failure log entry as the challenge,
+  tags and role. The home link to all dossiers reads "See all work".
+- **Skills** sit in two columns of boxes, each as tall as its content: AI &
+  LLM Orchestration, Backend & Databases, Frontend Development, Tools &
+  Workflow. Added VS Code, Vercel, HTML5 / CSS3, LangChain, CrewAI and
+  Pydantic.
+  - The evidence panel shows only the work behind the chosen skill (work that
+    used it, then work that plans to), and the newest case file by default.
+    On smaller screens, choosing a skill scrolls to the evidence.
+  - Skills can imply others (MySQL implies SQL, Next.js implies React and so
+    JavaScript), so related skills share their evidence.
+  - Shipped dossiers also list Git and GitHub, and Order Tracker JavaScript
+    and HTML5 / CSS3. CareerSyncAI lists its planned stack, shown as
+    "Planned stack" and "Planned:", never "Uses", while it is in progress.
+- **About page.** The bio fills its column beside a profile card: role,
+  availability, education, latest role, current project, and GitHub,
+  LinkedIn and Email as buttons with their logos.
+- **Footer.** "Designed & Built by" credit with a link to the source code;
+  links to other sites open in a new tab.
 - **Home page.** The journey map runs left to right on wider screens (still
   top to bottom on phones), so the featured dossiers show without scrolling.
   Three dossiers are featured, with a link to all case files.
