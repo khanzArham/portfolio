@@ -16,6 +16,15 @@ export const experience = [
       "Engineered interactive clarification loops that let agents ask follow-up questions when inputs were incomplete.",
       "Documented workflows, test results and failure logs for team reuse and maintainability.",
     ],
+    // Only skills the achievements above describe.
+    skills: [
+      "Anthropic Claude",
+      "Claude Skills & Plugins",
+      "Prompt Engineering & Contracts",
+      "Structured JSON Output",
+      "Ground-Truth Eval Suites",
+      "AI Automation Workflows",
+    ],
   },
   {
     organization: "NIAIS (National Initiative for AI & Security)",

@@ -1,0 +1,44 @@
+---
+slug: careersyncai
+caseNumber: CASE-004
+title: CareerSyncAI
+summary: Final year project in design. A two-sided hiring platform where AI agents help job seekers improve resumes and help recruiters screen candidates.
+status: in-progress
+featured: true
+role:
+  type: team
+  contribution: "I lead a team of two and own the system architecture: the multi-agent AI workflows, the FastAPI back end and the logic for both sides of the platform."
+period:
+  start: 2026
+  end: present
+updated: 2026-11-04
+tags: [AI, Web]
+stack: [Next.js, TypeScript, FastAPI, Python, PostgreSQL, Google Gemini API]
+---
+
+## Brief
+
+Hiring is slow on both sides. Job seekers send resumes that applicant tracking systems (ATS) filter out, and recruiters spend hours screening applications by hand.
+
+CareerSyncAI is my final year project: one platform with two sides.
+
+- **Job seekers** get AI help to optimize their resume for ATS and to automate applications.
+- **Recruiters** get automated resume screening, semantic matching of candidates to roles, and shortlisting.
+
+The project is in its **design phase**: the architecture and documentation are being written, and development has not started yet.
+
+## Method
+
+The planned architecture:
+
+- **Next.js** with TypeScript for a responsive front end serving both sides.
+- **FastAPI** for an asynchronous Python back end that runs the AI pipelines, with **PostgreSQL** for data.
+- **Multi-agent workflows** orchestrated with **LangChain** and **CrewAI**, running on **Google Gemini** models.
+
+The key design decision: split the work into small, specialized agents, such as a Resume Parser Agent and a Skill Evaluator Agent, rather than give one large prompt several jobs at once. Every agent returns structured output validated against a strict Pydantic JSON schema, so each step can be tested on its own and a bad output fails loudly instead of drifting.
+
+## Outcome
+
+**Where it stands:** in design. The architecture and documentation come first; development follows.
+
+**What comes next:** the resume parser is the first piece to be built and evaluated, by measuring its accuracy against a hand-labelled set of resumes. Those results, and the failure log, will be added to this case file once there is real work to report.

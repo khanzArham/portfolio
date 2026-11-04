@@ -32,12 +32,12 @@ test("semantic search finds a dossier by meaning, on this device", async ({
   });
 
   // No keyword in common with the Brick Breaker dossier.
-  await input(page).fill("game with physics");
+  await input(page).fill("retro video entertainment");
   await expect(results(page).first()).toContainText("Brick Breaker", {
     timeout: 15_000,
   });
 
-  expect(requests.filter((u) => /game|physics/i.test(u))).toEqual([]);
+  expect(requests.filter((u) => /retro|entertainment/i.test(u))).toEqual([]);
   expect(
     requests.filter((u) => !u.startsWith(new URL(page.url()).origin)),
   ).toEqual([]);
