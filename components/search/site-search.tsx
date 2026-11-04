@@ -111,7 +111,7 @@ export function SiteSearch() {
   return (
     <section
       aria-labelledby={`${inputId}-title`}
-      className="flex flex-col gap-4 rounded-lg border border-ink/10 bg-surface-raised p-5"
+      className="flex flex-col gap-4 rounded-lg border border-line bg-surface-raised p-5"
     >
       <h2
         id={`${inputId}-title`}
@@ -131,7 +131,7 @@ export function SiteSearch() {
           onFocus={() => void getIndex().catch(() => setIndexError(true))}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="e.g. Which work used Firebase?"
-          className="w-full rounded-md border border-ink/25 bg-paper px-3 py-2 text-ink"
+          className="w-full rounded-md border border-line-strong bg-paper px-3 py-2 text-ink"
         />
       </div>
 
@@ -141,7 +141,7 @@ export function SiteSearch() {
             type="button"
             onClick={enableSemantic}
             disabled={mode === "failed"}
-            className="rounded-md border border-ink/25 px-3 py-1.5 font-medium transition-colors duration-fast ease-standard hover:bg-surface disabled:opacity-60"
+            className="rounded-md border border-line-strong px-3 py-1.5 font-medium transition-colors duration-fast ease-standard hover:bg-surface disabled:opacity-60"
           >
             Turn on semantic search
             {downloadBytes ? ` (${mb(downloadBytes)} download)` : ""}

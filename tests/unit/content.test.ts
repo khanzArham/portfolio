@@ -197,8 +197,8 @@ describe("skills as evidence", () => {
   it("links skills to dossiers by stack name, ignoring case", () => {
     const evidence = skillEvidence(
       [
-        { name: "python", category: "Languages" },
-        { name: "Rust", category: "Languages" },
+        { name: "python", category: "Backend & Databases" },
+        { name: "Rust", category: "Backend & Databases" },
       ],
       dossiers,
     );
@@ -209,8 +209,8 @@ describe("skills as evidence", () => {
   it("errors on stack items missing from skills, warns on unused skills", () => {
     const { errors, warnings } = checkSkillCoverage(
       [
-        { name: "Python", category: "Languages" },
-        { name: "Rust", category: "Languages" },
+        { name: "Python", category: "Backend & Databases" },
+        { name: "Rust", category: "Backend & Databases" },
       ],
       dossiers,
     );
@@ -220,10 +220,36 @@ describe("skills as evidence", () => {
     expect(warnings).toEqual([expect.stringContaining('"Rust"')]);
   });
 
+  it("counts work for skills it implies, through every step", () => {
+    const skillList: Parameters<typeof skillEvidence>[0] = [
+      { name: "JavaScript", category: "Frontend Development" },
+      {
+        name: "React",
+        category: "Frontend Development",
+        implies: ["JavaScript"],
+      },
+      { name: "Next.js", category: "Frontend Development", implies: ["React"] },
+      { name: "Python", category: "Backend & Databases", implies: ["Cobol"] },
+    ];
+    const site = { ...dossiers[0], slug: "site", stack: ["Next.js"] };
+    const evidence = skillEvidence(skillList, [site]);
+    expect(evidence.get("Next.js")).toEqual(["site"]);
+    expect(evidence.get("React")).toEqual(["site"]);
+    expect(evidence.get("JavaScript")).toEqual(["site"]);
+    expect(evidence.get("Python")).toEqual([]);
+
+    const { errors } = checkSkillCoverage(skillList, []);
+    expect(errors).toEqual([
+      expect.stringContaining(
+        'Python implies: "Cobol" is not in content/skills.ts',
+      ),
+    ]);
+  });
+
   it("counts roles as evidence and checks their skill names", () => {
     const skillList = [
-      { name: "Rust", category: "Languages" },
-      { name: "Go", category: "Languages" },
+      { name: "Rust", category: "Backend & Databases" },
+      { name: "Go", category: "Backend & Databases" },
     ] as const;
     const experience = [
       {

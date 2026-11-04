@@ -17,7 +17,7 @@ export const mdxComponents: MDXComponents = {
   ),
   blockquote: (props) => (
     <blockquote
-      className="mt-4 border-l-2 border-ink/30 pl-4 text-muted"
+      className="mt-4 border-l-2 border-line-strong pl-4 text-muted"
       {...props}
     />
   ),
@@ -28,5 +28,5 @@ export const mdxComponents: MDXComponents = {
     />
   ),
   code: (props) => <code className="font-mono text-[0.9em]" {...props} />,
-  hr: () => <hr className="my-8 border-ink/10" />,
+  hr: () => <hr className="my-8 border-line" />,
 };

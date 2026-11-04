@@ -71,7 +71,7 @@ export function PaletteLauncher({ dossiers }: { dossiers: PaletteDossier[] }) {
         onClick={() => show(true)}
         onPointerEnter={() => void loadDialog()}
         onFocus={() => void loadDialog()}
-        className="inline-flex h-10 items-center gap-2 rounded-md px-2.5 text-sm text-ink transition-colors duration-fast ease-standard hover:bg-surface md:border md:border-ink/15"
+        className="inline-flex h-10 items-center gap-2 rounded-md px-2.5 text-sm text-ink transition-colors duration-fast ease-standard hover:bg-surface md:border md:border-line"
       >
         <svg
           aria-hidden="true"

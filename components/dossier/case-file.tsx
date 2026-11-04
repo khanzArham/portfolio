@@ -89,7 +89,7 @@ export function CaseFile({ dossier }: { dossier: Dossier }) {
         sections.failureLog === undefined && (
           <p
             role="note"
-            className="rounded-md border border-ink/15 bg-surface px-4 py-3 text-sm text-muted"
+            className="rounded-md border border-line bg-surface px-4 py-3 text-sm text-muted"
           >
             Work in progress: the failure log
             {dossier.isAiProject && " and evaluation"} will be added once there
@@ -141,10 +141,14 @@ export function CaseFile({ dossier }: { dossier: Dossier }) {
               <Tag key={tag}>{tag}</Tag>
             ))}
           </dd>
-          <dt className="font-mono text-muted">Stack</dt>
+          <dt className="font-mono text-muted">
+            {dossier.status === "in-progress" ? "Planned stack" : "Stack"}
+          </dt>
           <dd className="flex flex-wrap gap-2">
             {dossier.stack.map((item) => (
-              <Tag key={item}>{item}</Tag>
+              <Tag key={item} tone="tech">
+                {item}
+              </Tag>
             ))}
           </dd>
           {dossier.performance?.map((p) => (

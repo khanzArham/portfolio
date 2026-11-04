@@ -39,7 +39,7 @@ export function ChartFrame({
             aria-controls={regionId}
             aria-pressed={showTable}
             onClick={() => setShowTable((v) => !v)}
-            className={`rounded-md border px-3 py-1 font-mono text-xs transition-colors duration-fast ease-standard ${showTable ? "border-ink bg-ink text-paper" : "border-ink/20 text-muted hover:text-ink"}`}
+            className={`rounded-md border px-3 py-1 font-mono text-xs transition-colors duration-fast ease-standard ${showTable ? "border-ink bg-ink text-paper" : "border-line-strong text-muted hover:text-ink"}`}
           >
             Data table
           </button>

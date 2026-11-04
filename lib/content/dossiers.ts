@@ -243,10 +243,33 @@ export function getDossier(slug: string): Dossier | undefined {
 /** The fields cards and the client-side filter need; no section text. */
 export type DossierSummary = Pick<
   Dossier,
-  "slug" | "caseNumber" | "title" | "summary" | "status" | "period" | "tags"
->;
+  | "slug"
+  | "caseNumber"
+  | "title"
+  | "summary"
+  | "status"
+  | "period"
+  | "tags"
+  | "stack"
+> & {
+  roleType: Dossier["role"]["type"];
+  /** Title of the first failure log entry: the problem the work solved. */
+  challenge?: string;
+};
 
 export function toSummary(d: Dossier): DossierSummary {
-  const { slug, caseNumber, title, summary, status, period, tags } = d;
-  return { slug, caseNumber, title, summary, status, period, tags };
+  const { slug, caseNumber, title, summary, status, period, tags, stack } = d;
+  const challenge = d.sections.failureLog?.match(/^###\s+(.+)$/m)?.[1].trim();
+  return {
+    slug,
+    caseNumber,
+    title,
+    summary,
+    status,
+    period,
+    tags,
+    stack,
+    roleType: d.role.type,
+    ...(challenge && { challenge }),
+  };
 }

@@ -30,7 +30,7 @@ export default function MobileMenuDialog({
             event.preventDefault();
             returnFocusTo.current?.focus();
           }}
-          className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col gap-6 border-l border-ink/10 bg-surface-raised p-4"
+          className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col gap-6 border-l border-line bg-surface-raised p-4"
         >
           <div className="flex items-center justify-between">
             <Dialog.Title className="font-mono text-sm text-muted">

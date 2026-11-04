@@ -72,6 +72,8 @@ describe("buildJourney", () => {
           status: "in-progress",
           period: { start: "2026-01", end: "present" },
           tags: ["AI"],
+          stack: ["Python"],
+          roleType: "team",
         },
       ],
     })[1];

@@ -114,8 +114,8 @@ describe("corpus", () => {
     const corpus = buildCorpus({
       dossiers: [],
       skills: [
-        { name: "Python", category: "Languages" },
-        { name: "React", category: "Web" },
+        { name: "Python", category: "Backend & Databases" },
+        { name: "React", category: "Frontend Development" },
       ],
       experience: [],
       education: [
@@ -128,8 +128,8 @@ describe("corpus", () => {
       bio: ["About me."],
     });
     expect(corpus.map((d) => d.id)).toEqual([
-      "skills-Languages",
-      "skills-Web",
+      "skills-Backend & Databases",
+      "skills-Frontend Development",
       "page-about",
     ]);
   });

@@ -15,7 +15,7 @@ export function ChartTooltipBox({
   rows: TooltipRow[];
 }) {
   return (
-    <div className="rounded-md border border-ink/15 bg-surface-raised px-3 py-2 text-sm shadow-sm">
+    <div className="rounded-md border border-line bg-surface-raised px-3 py-2 text-sm">
       <p className="font-mono text-xs text-muted">{title}</p>
       <ul className="mt-1 flex flex-col gap-0.5">
         {rows.map((row) => (

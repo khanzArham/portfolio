@@ -127,7 +127,7 @@ export default function PaletteDialog({
             event.preventDefault();
             returnFocusTo.current?.focus();
           }}
-          className="fixed top-[12vh] left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-lg border border-ink/15 bg-surface-raised shadow-lg"
+          className="fixed top-[12vh] left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-lg border border-line bg-surface-raised"
         >
           <Dialog.Title className="sr-only">Command palette</Dialog.Title>
           <Dialog.Description className="sr-only">
@@ -140,7 +140,7 @@ export default function PaletteDialog({
               value={query}
               onValueChange={setQuery}
               placeholder="Search pages, dossiers and actions"
-              className="w-full border-b border-ink/10 bg-transparent px-4 py-3 text-ink outline-none placeholder:text-muted"
+              className="w-full border-b border-line bg-transparent px-4 py-3 text-ink outline-none placeholder:text-muted"
             />
             <Command.List className="max-h-[60vh] overflow-y-auto py-2">
               <Command.Empty className="px-4 py-6 text-center text-sm text-muted">
@@ -232,7 +232,7 @@ export default function PaletteDialog({
             </Command.List>
           </Command>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-ink/10 px-4 py-2 text-xs text-muted">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-2 text-xs text-muted">
             <p role="status">
               {copy === "copied"
                 ? "Email address copied."

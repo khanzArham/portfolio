@@ -14,7 +14,7 @@ export default async function Image() {
       <div
         style={{
           display: "flex",
-          fontFamily: "IBM Plex Mono",
+          fontFamily: "JetBrains Mono",
           fontSize: 30,
           color: t.muted,
         }}
@@ -24,7 +24,7 @@ export default async function Image() {
       <div
         style={{
           display: "flex",
-          fontFamily: "Fraunces",
+          fontFamily: "Inter Display",
           fontSize: 96,
           lineHeight: 1.05,
         }}

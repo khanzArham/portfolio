@@ -203,11 +203,10 @@ export const educationSchema = z.array(
 );
 
 export const SKILL_CATEGORIES = [
-  "Languages",
-  "ML & AI",
-  "Web",
-  "Data & Tools",
-  "Design",
+  "AI & LLM Orchestration",
+  "Backend & Databases",
+  "Frontend Development",
+  "Tools & Workflow",
 ] as const;
 
 export const skillsSchema = z
@@ -215,6 +214,11 @@ export const skillsSchema = z
     z.strictObject({
       name: nonEmpty,
       category: z.enum(SKILL_CATEGORIES),
+      /**
+       * Skills that using this one also shows (MySQL implies SQL), so work
+       * listing MySQL is evidence for SQL too. Names as in this list.
+       */
+      implies: z.array(nonEmpty).optional(),
     }),
   )
   .refine(

@@ -38,31 +38,27 @@ export function ogKeyMetrics(
  */
 export async function ogFonts() {
   const [display, sans, mono] = await Promise.all([
+    readFile(path.join(process.cwd(), "assets", "fonts", "Inter-SemiBold.ttf")),
+    readFile(path.join(process.cwd(), "assets", "fonts", "Inter-Regular.ttf")),
     readFile(
-      path.join(process.cwd(), "assets", "fonts", "Fraunces-SemiBold.ttf"),
-    ),
-    readFile(
-      path.join(process.cwd(), "assets", "fonts", "IBMPlexSans-Regular.ttf"),
-    ),
-    readFile(
-      path.join(process.cwd(), "assets", "fonts", "IBMPlexMono-Medium.ttf"),
+      path.join(process.cwd(), "assets", "fonts", "JetBrainsMono-Medium.ttf"),
     ),
   ]);
   return [
     {
-      name: "Fraunces",
+      name: "Inter Display",
       data: display,
       weight: 600 as const,
       style: "normal" as const,
     },
     {
-      name: "IBM Plex Sans",
+      name: "Inter",
       data: sans,
       weight: 400 as const,
       style: "normal" as const,
     },
     {
-      name: "IBM Plex Mono",
+      name: "JetBrains Mono",
       data: mono,
       weight: 500 as const,
       style: "normal" as const,
@@ -93,7 +89,7 @@ export function OgFrame({
         padding: 64,
         backgroundColor: t.paper,
         color: t.ink,
-        fontFamily: "IBM Plex Sans",
+        fontFamily: "Inter",
         borderTop: `12px solid ${t.accent}`,
       }}
     >
@@ -102,7 +98,7 @@ export function OgFrame({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          fontFamily: "IBM Plex Mono",
+          fontFamily: "JetBrains Mono",
           fontSize: 24,
         }}
       >
@@ -137,7 +133,7 @@ export function OgFrame({
           justifyContent: "space-between",
           alignItems: "flex-end",
           gap: 24,
-          fontFamily: "IBM Plex Mono",
+          fontFamily: "JetBrains Mono",
           fontSize: 22,
           color: t.muted,
         }}

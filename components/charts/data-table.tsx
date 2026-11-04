@@ -1,7 +1,7 @@
 import type { ChartTable } from "@/lib/charts";
 import { fmt } from "@/lib/charts";
 
-const cell = "border-b border-ink/10 px-3 py-2 text-left";
+const cell = "border-b border-line px-3 py-2 text-left";
 
 /** Accessible data table: caption, column headers, tabular numbers. */
 export function DataTable({

@@ -8,7 +8,7 @@ import { contactItem, site, visibleNavItems } from "@/lib/site";
 
 export function Header({ dossiers }: { dossiers: PaletteDossier[] }) {
   return (
-    <header className="border-b border-ink/10">
+    <header className="border-b border-line">
       <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-4 px-4">
         <Link href="/" className="font-display text-lg font-semibold">
           {site.owner}

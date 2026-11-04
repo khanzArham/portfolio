@@ -86,4 +86,16 @@ describe("Footer", () => {
       `mailto:${site.email}`,
     );
   });
+
+  it("opens other sites in a new tab, but not email", () => {
+    render(<Footer />);
+    for (const name of ["GitHub", "LinkedIn", "Source Code on GitHub"]) {
+      const link = screen.getByRole("link", { name });
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    }
+    expect(screen.getByRole("link", { name: "Email" })).not.toHaveAttribute(
+      "target",
+    );
+  });
 });

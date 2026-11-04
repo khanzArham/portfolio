@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import Link from "next/link";
 import { DossierCard } from "@/components/dossier/dossier-card";
 import { JourneyMap } from "@/components/journey/journey-map";
@@ -15,6 +17,11 @@ export const metadata = pageMetadata({
 
 const MAX_FEATURED = 3;
 
+// The resume button appears once public/resume.pdf exists (read at build).
+const hasResume = fs.existsSync(
+  path.join(process.cwd(), "public", "resume.pdf"),
+);
+
 export default function HomePage() {
   const dossiers = getDossiers();
   const featured = dossiers.filter((d) => d.featured).slice(0, MAX_FEATURED);
@@ -23,7 +30,11 @@ export default function HomePage() {
     <div className="flex flex-col gap-16">
       <JsonLd data={personJsonLd} />
       <section aria-labelledby="hero-title" className="flex flex-col gap-6">
-        <p className="font-mono text-sm text-muted">{site.role}</p>
+        <p className="inline-flex items-center gap-2 self-start rounded-full border border-line bg-surface-raised px-3 py-1 font-mono text-xs text-muted">
+          <span aria-hidden="true" className="size-2 rounded-full bg-success" />
+          {site.availability}
+        </p>
+        <p className="font-mono text-sm text-accent">{site.role}</p>
         <h1
           id="hero-title"
           className="font-display text-5xl font-semibold tracking-tight sm:text-6xl"
@@ -38,9 +49,18 @@ export default function HomePage() {
           >
             View work
           </Link>
+          {hasResume && (
+            <a
+              href="/resume.pdf"
+              download
+              className="inline-flex h-11 items-center rounded-md border border-line-strong px-5 font-medium transition-colors duration-fast ease-standard hover:bg-surface"
+            >
+              Download Resume
+            </a>
+          )}
           <Link
             href="/contact"
-            className="inline-flex h-11 items-center rounded-md border border-ink/20 px-5 font-medium transition-colors duration-fast ease-standard hover:bg-surface"
+            className="inline-flex h-11 items-center rounded-md border border-line-strong px-5 font-medium transition-colors duration-fast ease-standard hover:bg-surface"
           >
             Contact
           </Link>
@@ -72,7 +92,7 @@ export default function HomePage() {
               href="/projects"
               className="group inline-flex items-center gap-1 text-sm font-medium underline underline-offset-4"
             >
-              All {dossiers.length} case files
+              See all work
               <span
                 aria-hidden="true"
                 className="transition-transform duration-fast ease-standard group-hover:translate-x-0.5"

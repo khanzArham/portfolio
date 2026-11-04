@@ -145,6 +145,11 @@ describe("SkillEvidence", () => {
           roles: ["AI Intern, Developers Hub"],
         },
         { name: "Docker", dossiers: [], roles: [] },
+        {
+          name: "Vercel",
+          dossiers: ["order-tracker", "brick-breaker"],
+          roles: [],
+        },
       ],
     },
   ];
@@ -153,6 +158,8 @@ describe("SkillEvidence", () => {
     summary: "",
     status: "shipped",
     period: { start: "2026", end: "2026" },
+    stack: ["React"],
+    roleType: "solo",
   }));
 
   it("highlights the dossiers that used a skill, and clears on a second click", async () => {
@@ -171,18 +178,18 @@ describe("SkillEvidence", () => {
     expect(screen.queryByText("Uses React")).not.toBeInTheDocument();
   });
 
-  it("moves the matching dossiers to the top", async () => {
+  it("shows the newest case file by default, then only the matching work", async () => {
     const user = userEvent.setup();
     render(<SkillEvidence groups={groups} dossiers={summaries} />);
     const titles = () =>
       screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
-    const before = titles();
+    expect(titles()).toEqual([summaries[0].title]);
 
     await user.click(screen.getByRole("button", { name: "C++" }));
-    expect(titles()[0]).toBe("Brick Breaker");
-    expect(titles().slice(1)).toEqual(
-      before.filter((t) => t !== "Brick Breaker"),
-    );
+    expect(titles()).toEqual(["Brick Breaker"]);
+
+    await user.click(screen.getByRole("button", { name: "C++" }));
+    expect(titles()).toEqual([summaries[0].title]);
   });
 
   it("shows the roles that used a skill", async () => {
@@ -197,6 +204,27 @@ describe("SkillEvidence", () => {
     expect(
       screen.getByRole("link", { name: "AI Intern, Developers Hub" }),
     ).toHaveAttribute("href", "/experience#field-title");
+  });
+
+  it("calls an in-progress project planned, not used", async () => {
+    const user = userEvent.setup();
+    const withPlanned = summaries.map((d) =>
+      d.slug === "order-tracker" ? { ...d, status: "in-progress" as const } : d,
+    );
+    render(<SkillEvidence groups={groups} dossiers={withPlanned} />);
+    await user.click(screen.getByRole("button", { name: "Vercel" }));
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Vercel was used in Brick Breaker, and is planned for Order Tracker.",
+    );
+    expect(screen.getByText("Planned: Vercel")).toBeInTheDocument();
+    expect(screen.getByText("Uses Vercel")).toBeInTheDocument();
+    // Used before planned, although Order Tracker comes first in the input.
+    const titles = screen
+      .getAllByRole("heading", { level: 3 })
+      .map((h) => h.textContent);
+    expect(titles.indexOf("Brick Breaker")).toBeLessThan(
+      titles.indexOf("Order Tracker"),
+    );
   });
 
   it("says so when no work shows a skill yet", async () => {
