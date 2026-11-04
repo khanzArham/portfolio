@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DossierCard } from "@/components/dossier/dossier-card";
 import type { DossierSummary } from "@/lib/content/dossiers";
 
@@ -13,6 +13,13 @@ export type SkillGroup = {
    */
   skills: { name: string; dossiers: string[]; roles: string[] }[];
 };
+
+// Category names have spaces and "&", which break id references.
+const slug = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 const list = (titles: string[]) =>
   titles.length < 3
@@ -32,67 +39,111 @@ export function SkillEvidence({
   dossiers: DossierSummary[];
 }) {
   const [selected, setSelected] = useState<string | null>(null);
+  const evidenceRef = useRef<HTMLElement>(null);
+
+  // Below lg the evidence sits under the skill boxes, so bring it into view
+  // when a skill is chosen; otherwise the click seems to do nothing.
+  const choose = (name: string | null) => {
+    setSelected(name);
+    const evidence = evidenceRef.current;
+    if (!name || !evidence) return;
+    const { top } = evidence.getBoundingClientRect();
+    if (top < 0 || top > window.innerHeight * 0.6) {
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      evidence.scrollIntoView({
+        behavior: reduce ? "auto" : "smooth",
+        block: "start",
+      });
+    }
+  };
 
   const skill = groups
     .flatMap((g) => g.skills)
     .find((s) => s.name === selected);
   const used = new Set(skill?.dossiers ?? []);
   const roles = skill?.roles ?? [];
-  const usedTitles = dossiers
-    .filter((d) => used.has(d.slug))
-    .map((d) => d.title);
-  // Matching dossiers first; the rest keep their order below.
-  const ordered = [
-    ...dossiers.filter((d) => used.has(d.slug)),
-    ...dossiers.filter((d) => !used.has(d.slug)),
-  ];
+  // A project still in progress only plans to use the skill.
+  const titles = (planned: boolean) =>
+    dossiers
+      .filter(
+        (d) => used.has(d.slug) && (d.status === "in-progress") === planned,
+      )
+      .map((d) => d.title);
+  const usedTitles = titles(false);
+  const plannedTitles = titles(true);
+  // With a skill chosen: only the work that used it, then the work that
+  // plans to. With none: the newest case file (dossiers come newest first).
+  const shown = selected
+    ? [
+        ...dossiers.filter(
+          (d) => used.has(d.slug) && d.status !== "in-progress",
+        ),
+        ...dossiers.filter(
+          (d) => used.has(d.slug) && d.status === "in-progress",
+        ),
+      ]
+    : dossiers.slice(0, 1);
 
   const sources = [...usedTitles, ...roles.map((r) => `the ${r} role`)];
+  const parts = [
+    sources.length && `was used in ${list(sources)}`,
+    plannedTitles.length && `is planned for ${list(plannedTitles)}`,
+  ].filter(Boolean);
   const summary = !selected
-    ? "Choose a skill to see the work that used it."
-    : sources.length
-      ? `${selected} was used in ${list(sources)}.`
+    ? "Choose a skill to see the work that used it. Latest case file:"
+    : parts.length
+      ? `${selected} ${parts.join(", and ")}.`
       : `No published work shows ${selected} yet.`;
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_minmax(0,24rem)]">
-      <div className="flex flex-col gap-10">
-        {groups.map(({ category, skills }) => (
-          <section
-            key={category}
-            aria-labelledby={`skills-${category}`}
-            className="flex flex-col gap-4"
-          >
-            <h2
-              id={`skills-${category}`}
-              className="font-display text-xl font-semibold"
-            >
-              {category}
-            </h2>
-            <ul className="flex flex-wrap gap-2">
-              {skills.map((skill) => {
-                const pressed = selected === skill.name;
-                return (
-                  <li key={skill.name}>
-                    <button
-                      type="button"
-                      aria-pressed={pressed}
-                      onClick={() => setSelected(pressed ? null : skill.name)}
-                      className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 transition-colors duration-fast ease-standard ${pressed ? "bg-ink text-paper" : "border border-ink/15 hover:bg-surface"}`}
-                    >
-                      {skill.name}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
+      {/* Two columns filled alternately (1st and 3rd left, 2nd and 4th
+          right). Each column stacks its boxes with the same gap, so every
+          box is as tall as its content and no space is left between. */}
+      <div className="grid content-start items-start gap-4 sm:grid-cols-2">
+        {[0, 1].map((column) => (
+          <div key={column} className="flex flex-col gap-4">
+            {groups
+              .filter((_, index) => index % 2 === column)
+              .map(({ category, skills }) => (
+                <section
+                  key={category}
+                  aria-labelledby={`skills-${slug(category)}`}
+                  className="flex flex-col gap-4 rounded-lg border border-line bg-surface-raised p-5"
+                >
+                  <h2
+                    id={`skills-${slug(category)}`}
+                    className="font-display text-base font-semibold"
+                  >
+                    {category}
+                  </h2>
+                  <ul className="flex flex-wrap gap-2">
+                    {skills.map((skill) => {
+                      const pressed = selected === skill.name;
+                      return (
+                        <li key={skill.name}>
+                          <button
+                            type="button"
+                            aria-pressed={pressed}
+                            onClick={() => choose(pressed ? null : skill.name)}
+                            className={`inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-left text-sm transition-colors duration-fast ease-standard ${pressed ? "border-accent bg-accent text-on-accent" : "border-line hover:border-accent hover:bg-surface"}`}
+                          >
+                            {skill.name}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              ))}
+          </div>
         ))}
       </div>
 
       <section
+        ref={evidenceRef}
         aria-labelledby="skills-evidence"
-        className="flex flex-col gap-4 lg:sticky lg:top-8 lg:self-start"
+        className="flex scroll-mt-20 flex-col gap-4 lg:sticky lg:top-8 lg:self-start"
       >
         <h2 id="skills-evidence" className="font-display text-xl font-semibold">
           Evidence
@@ -111,7 +162,7 @@ export function SkillEvidence({
             {roles.map((role) => (
               <li
                 key={role}
-                className="flex flex-col gap-1 rounded-lg border border-ink/15 bg-surface-raised p-4 outline-2 outline-offset-4 outline-ink"
+                className="flex flex-col gap-1 rounded-lg border border-line bg-surface-raised p-4 outline-2 outline-offset-4 outline-ink"
               >
                 <span className="self-start rounded-sm bg-accent px-2 py-0.5 font-mono text-xs text-on-accent">
                   Role
@@ -127,7 +178,7 @@ export function SkillEvidence({
           </ul>
         )}
         <ul className="flex flex-col gap-4">
-          {ordered.map((dossier) => {
+          {shown.map((dossier) => {
             const highlighted = used.has(dossier.slug);
             return (
               <li
@@ -137,7 +188,8 @@ export function SkillEvidence({
               >
                 {highlighted && (
                   <span className="self-start rounded-sm bg-accent px-2 py-0.5 font-mono text-xs text-on-accent">
-                    Uses {selected}
+                    {dossier.status === "in-progress" ? "Planned:" : "Uses"}{" "}
+                    {selected}
                   </span>
                 )}
                 <DossierCard dossier={dossier} />

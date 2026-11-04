@@ -47,18 +47,48 @@ export const getSkills = () => getProfile().skills;
 
 const key = (name: string) => name.trim().toLowerCase();
 
+/**
+ * For each skill, the skills whose use shows it: itself plus every skill
+ * that implies it, directly or through others (Next.js -> React ->
+ * JavaScript). Keys are lowercase names.
+ */
+function shownBy(skillList: Skill[]): Map<string, Set<string>> {
+  const implies = new Map(
+    skillList.map((s) => [key(s.name), (s.implies ?? []).map(key)]),
+  );
+  const result = new Map(
+    skillList.map((s) => [key(s.name), new Set([key(s.name)])]),
+  );
+  for (const skill of skillList) {
+    const seen = new Set<string>();
+    const pending = [...(implies.get(key(skill.name)) ?? [])];
+    while (pending.length) {
+      const parent = pending.pop()!;
+      if (seen.has(parent)) continue;
+      seen.add(parent);
+      result.get(parent)?.add(key(skill.name));
+      pending.push(...(implies.get(parent) ?? []));
+    }
+  }
+  return result;
+}
+
 /** Skills as evidence (plan §3): skill name -> slugs of dossiers using it. */
 export function skillEvidence(
   skillList: Skill[],
   dossiers: Dossier[],
 ): Map<string, string[]> {
+  const shown = shownBy(skillList);
   return new Map(
-    skillList.map((skill) => [
-      skill.name,
-      dossiers
-        .filter((d) => d.stack.some((item) => key(item) === key(skill.name)))
-        .map((d) => d.slug),
-    ]),
+    skillList.map((skill) => {
+      const names = shown.get(key(skill.name))!;
+      return [
+        skill.name,
+        dossiers
+          .filter((d) => d.stack.some((item) => names.has(key(item))))
+          .map((d) => d.slug),
+      ];
+    }),
   );
 }
 
@@ -67,13 +97,17 @@ export function roleEvidence(
   skillList: Skill[],
   experience: Experience,
 ): Map<string, string[]> {
+  const shown = shownBy(skillList);
   return new Map(
-    skillList.map((skill) => [
-      skill.name,
-      experience
-        .filter((e) => e.skills?.some((s) => key(s) === key(skill.name)))
-        .map((e) => `${e.role}, ${e.organization}`),
-    ]),
+    skillList.map((skill) => {
+      const names = shown.get(key(skill.name))!;
+      return [
+        skill.name,
+        experience
+          .filter((e) => e.skills?.some((s) => names.has(key(s))))
+          .map((e) => `${e.role}, ${e.organization}`),
+      ];
+    }),
   );
 }
 
@@ -107,6 +141,16 @@ export function checkSkillCoverage(
         ),
     ),
   ];
+  errors.push(
+    ...skillList.flatMap((s) =>
+      (s.implies ?? [])
+        .filter((item) => !known.has(key(item)))
+        .map(
+          (item) =>
+            `content/skills.ts › ${s.name} implies: "${item}" is not in content/skills.ts`,
+        ),
+    ),
+  );
   const roles = roleEvidence(skillList, experience);
   const warnings = [...skillEvidence(skillList, dossiers)]
     .filter(([name, slugs]) => !slugs.length && !roles.get(name)?.length)
