@@ -1,26 +1,37 @@
 import { SkillEvidence } from "@/components/skills/skill-evidence";
 import { getDossiers, toSummary } from "@/lib/content/dossiers";
-import { getSkills, skillEvidence } from "@/lib/content/profile";
+import {
+  getExperience,
+  getSkills,
+  roleEvidence,
+  skillEvidence,
+} from "@/lib/content/profile";
 import { SKILL_CATEGORIES } from "@/lib/content/schemas";
 import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Skills",
-  description: `Technical skills of ${site.owner}, each linked to the projects that used it.`,
+  description: `Technical skills of ${site.owner}, each linked to the projects and roles that used it.`,
   path: "/skills",
 });
 
-// Grouped by category; each skill carries the dossiers whose stack lists it.
+// Grouped by category; each skill carries the dossiers whose stack lists it
+// and the roles that used it.
 export default function SkillsPage() {
   const skills = getSkills();
   const dossiers = getDossiers();
   const evidence = skillEvidence(skills, dossiers);
+  const roles = roleEvidence(skills, getExperience());
   const groups = SKILL_CATEGORIES.map((category) => ({
     category,
     skills: skills
       .filter((s) => s.category === category)
-      .map((s) => ({ name: s.name, dossiers: evidence.get(s.name) ?? [] })),
+      .map((s) => ({
+        name: s.name,
+        dossiers: evidence.get(s.name) ?? [],
+        roles: roles.get(s.name) ?? [],
+      })),
   })).filter((group) => group.skills.length > 0);
 
   return (

@@ -1,45 +1,44 @@
 ---
-# DRAFT: facts from the CV (v2, Oct 2026) only. Remove `draft: true` once
-# the TODO (owner) parts are written with real details.
-draft: true
 slug: order-tracker
 caseNumber: CASE-003
 title: Order Tracker
-summary: Order management web app with Google Sign-In, real-time Firestore status tracking and per-user security rules.
+summary: Order tracking web app where customers sign in with Google and follow their order status live, built on React and Firebase.
 status: shipped
+featured: true
 role:
   type: solo
-  contribution: "TODO (owner): confirm solo or team, and your part."
+  contribution: Designed and built the app end to end, including the Firestore data model and security rules.
 period:
   start: 2026
   end: 2026
-updated: 2026-10-30
+updated: 2026-11-04
 tags: [Web]
 stack: [React, Firebase]
 ---
 
 ## Brief
 
-A full-stack order management web application: people sign in with Google and follow the status of their own orders in real time.
-
-TODO (owner): who it was for, and why it mattered.
+Online shops get a steady stream of "where is my order?" messages. This app lets customers answer that themselves: they sign in and see their order move through **Placed**, **Processing**, **Dispatched** and **Delivered** as it happens.
 
 ## Method
 
-Built with React.js on Firebase:
+- **React** for the front end.
+- **Firebase Authentication** with Google Sign-In, so customers sign in without a new password.
+- **Cloud Firestore** for order data, with real-time listeners so a status change appears without a refresh.
+- **Firestore security rules** that isolate data, so each customer can read only their own orders.
 
-- Google Sign-In through Firebase Authentication.
-- Real-time order status stored in Cloud Firestore.
-- Cloud Firestore security rules that isolate data, so each user can access only their own order records.
-
-TODO (owner): the key choices and why you made them.
+I chose Firebase as a serverless back end: live sync and authentication out of the box, and no servers to run.
 
 ## Failure Log
 
-### TODO (owner): a real failure
+### Real-time listeners used up the Firestore read quota
 
-What did not work, why, and what you changed. Required before this dossier is published.
+**What happened:** during testing, the app used up Firestore's read quota far faster than its traffic could explain.
+
+**Why:** the real-time `onSnapshot` listeners were attached in parent components and never detached when those components unmounted. Re-renders kept adding new listeners, and every one of them counted reads.
+
+**What I changed:** I moved each listener into a custom React hook that returns a cleanup function, so the listener is removed when the component unmounts, and I flattened the component state to cut unnecessary re-renders.
 
 ## Outcome
 
-TODO (owner): the result and what you learned.
+The app tracks orders live for signed-in customers. The quota problem taught me how to manage real-time listeners in React: attach them in one place, always clean them up, and watch hook dependencies closely.

@@ -8,6 +8,7 @@ import {
   educationSchema,
   experienceSchema,
   skillsSchema,
+  type Experience,
   type Skill,
 } from "@/lib/content/schemas";
 
@@ -61,27 +62,57 @@ export function skillEvidence(
   );
 }
 
-/**
- * Cross-checks dossier stacks against skills.ts.
- * A stack item with no matching skill is an error (keeps names consistent).
- * A skill no dossier uses yet is only a warning: profile content (Step 14)
- * lands before most dossiers (Steps 15 and 19).
- */
-export function checkSkillCoverage(skillList: Skill[], dossiers: Dossier[]) {
-  const known = new Set(skillList.map((s) => key(s.name)));
-  const errors = dossiers.flatMap((d) =>
-    d.stack
-      .filter((item) => !known.has(key(item)))
-      .map(
-        (item) =>
-          `content/projects/${d.slug}.mdx › stack: "${item}" is not in content/skills.ts`,
-      ),
+/** Work experience as evidence: skill name -> "Role, Organization" labels. */
+export function roleEvidence(
+  skillList: Skill[],
+  experience: Experience,
+): Map<string, string[]> {
+  return new Map(
+    skillList.map((skill) => [
+      skill.name,
+      experience
+        .filter((e) => e.skills?.some((s) => key(s) === key(skill.name)))
+        .map((e) => `${e.role}, ${e.organization}`),
+    ]),
   );
+}
+
+/**
+ * Cross-checks dossier stacks and role skills against skills.ts.
+ * A name with no matching skill is an error (keeps names consistent).
+ * A skill with no evidence yet (no public dossier, no role) is only a
+ * warning: profile content (Step 14) lands before most dossiers.
+ */
+export function checkSkillCoverage(
+  skillList: Skill[],
+  dossiers: Dossier[],
+  experience: Experience = [],
+) {
+  const known = new Set(skillList.map((s) => key(s.name)));
+  const errors = [
+    ...dossiers.flatMap((d) =>
+      d.stack
+        .filter((item) => !known.has(key(item)))
+        .map(
+          (item) =>
+            `content/projects/${d.slug}.mdx › stack: "${item}" is not in content/skills.ts`,
+        ),
+    ),
+    ...experience.flatMap((e) =>
+      (e.skills ?? [])
+        .filter((item) => !known.has(key(item)))
+        .map(
+          (item) =>
+            `content/experience.ts › ${e.organization} skills: "${item}" is not in content/skills.ts`,
+        ),
+    ),
+  ];
+  const roles = roleEvidence(skillList, experience);
   const warnings = [...skillEvidence(skillList, dossiers)]
-    .filter(([, slugs]) => slugs.length === 0)
+    .filter(([name, slugs]) => !slugs.length && !roles.get(name)?.length)
     .map(
       ([name]) =>
-        `content/skills.ts: "${name}" is not used by any public dossier yet`,
+        `content/skills.ts: "${name}" has no evidence yet (no public dossier or role uses it)`,
     );
   return { errors, warnings };
 }

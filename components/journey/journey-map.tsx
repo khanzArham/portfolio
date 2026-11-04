@@ -17,20 +17,23 @@ export function JourneyMap({ stations }: { stations: Station[] }) {
       </h2>
 
       <div className="relative">
-        {/* Track and scroll-linked fill, centered on the 12px dots. */}
+        {/* Track and scroll-linked fill, centered on the 12px dots: a
+            vertical line on small screens, and on md+ a horizontal one from
+            the first dot to the last (the last column starts one column
+            width, minus the dot's center, from the right edge). */}
         <div
           aria-hidden="true"
-          className="absolute top-2 bottom-2 left-[5px] w-0.5 rounded-full bg-ink/15"
+          className="absolute top-2 bottom-2 left-[5px] w-0.5 rounded-full bg-ink/15 md:top-[5px] md:right-[calc((100%_-_4rem)/3_-_6px)] md:bottom-auto md:left-1.5 md:h-0.5 md:w-auto"
         >
           <div className="journey-path-fill h-full w-full rounded-full bg-ink dark:bg-accent" />
         </div>
 
-        <ol className="flex flex-col gap-6">
+        <ol className="flex flex-col gap-6 md:grid md:grid-cols-3 md:items-start md:gap-8">
           {stations.map((station) => (
-            <li key={station.id} className="relative pl-8">
+            <li key={station.id} className="relative pl-8 md:pt-8 md:pl-0">
               <span
                 aria-hidden="true"
-                className="absolute top-1.5 left-0 size-3 rounded-full border-2 border-paper bg-ink ring-2 ring-ink dark:bg-accent dark:ring-accent"
+                className="absolute top-1.5 left-0 size-3 rounded-full border-2 border-paper bg-ink ring-2 ring-ink md:top-0 dark:bg-accent dark:ring-accent"
               />
               <details className="group">
                 <summary className="flex cursor-pointer list-none flex-col gap-0.5 rounded-md [&::-webkit-details-marker]:hidden">

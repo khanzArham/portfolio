@@ -1,41 +1,47 @@
 ---
-# DRAFT: facts from the CV (v2, Oct 2026) only. Remove `draft: true` once
-# the TODO (owner) parts are written with real details.
-draft: true
 slug: brick-breaker
 caseNumber: CASE-001
 title: Brick Breaker
-summary: 2D arcade game in C++ built on object-oriented design, with custom collision physics, game state management and scoring.
+summary: 2D arcade game in C++ built to practise object-oriented design, with its own game loop, collision physics and scoring.
 status: shipped
 role:
   type: solo
-  contribution: "TODO (owner): confirm solo or team, and your part."
+  contribution: Designed and wrote the whole game, from the class structure to the game loop and collision logic.
 period:
   start: 2024
   end: 2024
-updated: 2026-10-30
+updated: 2026-11-04
 tags: [Software]
 stack: [C++]
 ---
 
 ## Brief
 
-A 2D arcade game in the Brick Breaker style, written in C++.
+A Brick Breaker style arcade game: a paddle, a bouncing ball and a wall of bricks to clear.
 
-TODO (owner): the context (course project?) and why it mattered.
+I built it to see inheritance, polymorphism and encapsulation working in a program that runs in real time, rather than in small exercises. Writing the game loop, the movement and the paddle and brick collisions myself was the point.
 
 ## Method
 
-Applied object-oriented design principles, with custom collision physics, game state management and scoring logic.
-
-TODO (owner): the main classes, the graphics library, and how collisions are detected.
+- Plain C++ with an object-oriented design. I chose C++ for direct control over memory, pointers and how much work each frame does.
+- The ball, paddle and bricks are separate classes, so each object owns its own state and drawing and the game loop treats them through a shared interface.
+- Each frame, the game moves objects, checks bounding boxes for overlaps, reverses the ball's velocity on impact, and updates the score and game state.
 
 ## Failure Log
 
-### TODO (owner): a real failure
+### The ball passed into the paddle and bricks at high speed
 
-What did not work, why, and what you changed. Required before this dossier is published.
+**What happened:** once the ball moved fast enough, it sometimes ended up inside the paddle or a brick and got stuck there instead of bouncing.
+
+**Why:** collisions were checked only at discrete frames, by testing whether two bounding boxes overlapped. At high speed the ball travelled far enough in one frame to land deep inside an object before the check ever saw it.
+
+**What I changed:** I tied the overlap test to the ball's movement for that frame (its velocity scaled by delta time) and reworked how velocity flips on impact, so a fast ball bounces off cleanly instead of sinking in.
 
 ## Outcome
 
-TODO (owner): the result and what you learned.
+A working game, and a practical grounding in:
+
+- designing classes that keep their own state;
+- memory allocation with raw and smart pointers;
+- structuring a game loop;
+- collision detection, including why discrete checks break down at high speed.

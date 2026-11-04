@@ -1,0 +1,41 @@
+---
+slug: rental-property-management
+caseNumber: CASE-002
+title: Rental Property Management System
+summary: Relational MySQL database that keeps leases, rent payments, vacancies and maintenance logs for landlords and tenants in one place.
+status: shipped
+featured: true
+role:
+  type: team
+  contribution: "In a team of three, I designed the relational schema and normalized the ERD to 3NF, and wrote the complex SQL queries, stored procedures and triggers."
+period:
+  start: 2025
+  end: 2025
+updated: 2026-11-04
+tags: [Software]
+stack: [SQL, MySQL]
+---
+
+## Brief
+
+Landlords and tenants track leases, monthly rent, vacant units and maintenance requests in scattered places. This system brings those records into one structured relational database.
+
+## Method
+
+- **MySQL**, chosen for relational integrity and transactions: foreign keys with cascading actions keep related records consistent, and ACID transactions protect the rent ledger.
+- A schema designed from an ERD and normalized to **third normal form (3NF)**.
+- **Stored procedures** for the common operations, and **triggers** that keep dependent records in step automatically.
+
+## Failure Log
+
+### Queries slowed sharply on a large test dataset
+
+**What happened:** when we tested with a large dataset, query times rose sharply.
+
+**Why:** the foreign key columns had no indexes, and several queries used nested subqueries, so the database fell back to full table scans.
+
+**What I changed:** I added B-tree indexes to the columns used most often in lookups, and rewrote the nested subqueries as joins, with views for the queries we ran repeatedly.
+
+## Outcome
+
+A working relational system for rental records. I learned relational database design, the trade-offs of normalization, indexing strategies, and how to find and fix slow SQL queries.

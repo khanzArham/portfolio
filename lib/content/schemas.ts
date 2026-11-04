@@ -171,7 +171,7 @@ export const dossierFrontmatterSchema = z.strictObject({
   featured: z.boolean().optional(),
   /**
    * Awaiting the owner's facts (e.g. a real failure log). Validated, shown
-   * in development and CI with a banner, never published.
+   * with a banner when CONTENT_FIXTURES=1 (CI and E2E), never published.
    */
   draft: z.boolean().optional(),
 });
@@ -188,6 +188,8 @@ export const experienceSchema = z.array(
     location: z.string().optional(),
     achievements: z.array(nonEmpty).min(1),
     link: z.url().optional(),
+    /** Skills this role used, named as in skills.ts: evidence like a stack. */
+    skills: z.array(nonEmpty).optional(),
   }),
 );
 

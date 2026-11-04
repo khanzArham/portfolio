@@ -61,12 +61,26 @@ export default function HomePage() {
           aria-labelledby="featured-title"
           className="flex flex-col gap-6"
         >
-          <h2
-            id="featured-title"
-            className="font-display text-2xl font-semibold"
-          >
-            Featured dossiers
-          </h2>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+            <h2
+              id="featured-title"
+              className="font-display text-2xl font-semibold"
+            >
+              Featured dossiers
+            </h2>
+            <Link
+              href="/projects"
+              className="group inline-flex items-center gap-1 text-sm font-medium underline underline-offset-4"
+            >
+              All {dossiers.length} case files
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-fast ease-standard group-hover:translate-x-0.5"
+              >
+                →
+              </span>
+            </Link>
+          </div>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((d) => (
               <li key={d.slug}>

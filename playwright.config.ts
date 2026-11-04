@@ -37,6 +37,8 @@ export default defineConfig({
     command: isCI ? "npm run start" : "npm run dev",
     url: baseURL,
     reuseExistingServer: !isCI,
+    // Tests need the "_" fixture dossiers; `npm run dev` alone hides them.
+    env: { CONTENT_FIXTURES: "1" },
     timeout: 120_000,
   },
 });
