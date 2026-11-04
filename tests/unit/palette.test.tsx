@@ -137,8 +137,14 @@ describe("SkillEvidence", () => {
     {
       category: "Web",
       skills: [
-        { name: "React", dossiers: ["order-tracker"] },
-        { name: "Docker", dossiers: [] },
+        { name: "React", dossiers: ["order-tracker"], roles: [] },
+        { name: "C++", dossiers: ["brick-breaker"], roles: [] },
+        {
+          name: "Prompt Engineering & Contracts",
+          dossiers: [],
+          roles: ["AI Intern, Developers Hub"],
+        },
+        { name: "Docker", dossiers: [], roles: [] },
       ],
     },
   ];
@@ -165,12 +171,40 @@ describe("SkillEvidence", () => {
     expect(screen.queryByText("Uses React")).not.toBeInTheDocument();
   });
 
-  it("says so when no dossier uses a skill yet", async () => {
+  it("moves the matching dossiers to the top", async () => {
+    const user = userEvent.setup();
+    render(<SkillEvidence groups={groups} dossiers={summaries} />);
+    const titles = () =>
+      screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
+    const before = titles();
+
+    await user.click(screen.getByRole("button", { name: "C++" }));
+    expect(titles()[0]).toBe("Brick Breaker");
+    expect(titles().slice(1)).toEqual(
+      before.filter((t) => t !== "Brick Breaker"),
+    );
+  });
+
+  it("shows the roles that used a skill", async () => {
+    const user = userEvent.setup();
+    render(<SkillEvidence groups={groups} dossiers={summaries} />);
+    await user.click(
+      screen.getByRole("button", { name: "Prompt Engineering & Contracts" }),
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Prompt Engineering & Contracts was used in the AI Intern, Developers Hub role.",
+    );
+    expect(
+      screen.getByRole("link", { name: "AI Intern, Developers Hub" }),
+    ).toHaveAttribute("href", "/experience#field-title");
+  });
+
+  it("says so when no work shows a skill yet", async () => {
     const user = userEvent.setup();
     render(<SkillEvidence groups={groups} dossiers={summaries} />);
     await user.click(screen.getByRole("button", { name: /Docker/ }));
     expect(screen.getByRole("status")).toHaveTextContent(
-      "No published dossier uses Docker yet.",
+      "No published work shows Docker yet.",
     );
   });
 });

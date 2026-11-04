@@ -1,13 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { DossierCard } from "@/components/dossier/dossier-card";
 import type { DossierSummary } from "@/lib/content/dossiers";
 
 export type SkillGroup = {
   category: string;
-  /** Each skill with the slugs of the dossiers that used it. */
-  skills: { name: string; dossiers: string[] }[];
+  /**
+   * Each skill with the slugs of the dossiers that used it, and the roles
+   * ("Role, Organization") that used it.
+   */
+  skills: { name: string; dossiers: string[]; roles: string[] }[];
 };
 
 const list = (titles: string[]) =>
@@ -16,8 +20,9 @@ const list = (titles: string[]) =>
     : `${titles.slice(0, -1).join(", ")} and ${titles.at(-1)}`;
 
 /**
- * Skills as evidence (plan §3, §6.5): choosing a skill highlights the
- * dossiers whose stack lists it. Choosing it again clears the highlight.
+ * Skills as evidence (plan §3, §6.5): choosing a skill moves the dossiers
+ * whose stack lists it to the top, highlighted, and names the roles that
+ * used it. Choosing it again clears the selection.
  */
 export function SkillEvidence({
   groups,
@@ -28,19 +33,26 @@ export function SkillEvidence({
 }) {
   const [selected, setSelected] = useState<string | null>(null);
 
-  const used = new Set(
-    groups.flatMap((g) => g.skills).find((s) => s.name === selected)
-      ?.dossiers ?? [],
-  );
+  const skill = groups
+    .flatMap((g) => g.skills)
+    .find((s) => s.name === selected);
+  const used = new Set(skill?.dossiers ?? []);
+  const roles = skill?.roles ?? [];
   const usedTitles = dossiers
     .filter((d) => used.has(d.slug))
     .map((d) => d.title);
+  // Matching dossiers first; the rest keep their order below.
+  const ordered = [
+    ...dossiers.filter((d) => used.has(d.slug)),
+    ...dossiers.filter((d) => !used.has(d.slug)),
+  ];
 
+  const sources = [...usedTitles, ...roles.map((r) => `the ${r} role`)];
   const summary = !selected
-    ? "Choose a skill to see the dossiers that used it."
-    : usedTitles.length
-      ? `${selected} was used in ${list(usedTitles)}.`
-      : `No published dossier uses ${selected} yet.`;
+    ? "Choose a skill to see the work that used it."
+    : sources.length
+      ? `${selected} was used in ${list(sources)}.`
+      : `No published work shows ${selected} yet.`;
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_minmax(0,24rem)]">
@@ -69,18 +81,6 @@ export function SkillEvidence({
                       className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 transition-colors duration-fast ease-standard ${pressed ? "bg-ink text-paper" : "border border-ink/15 hover:bg-surface"}`}
                     >
                       {skill.name}
-                      {/* aria-label is not allowed on a plain span, so the
-                          count is spoken through visually hidden text. */}
-                      <span
-                        aria-hidden="true"
-                        className={`font-mono text-xs ${pressed ? "text-paper" : "text-muted"}`}
-                      >
-                        {skill.dossiers.length}
-                      </span>
-                      <span className="sr-only">
-                        , used in {skill.dossiers.length}{" "}
-                        {skill.dossiers.length === 1 ? "dossier" : "dossiers"}
-                      </span>
                     </button>
                   </li>
                 );
@@ -106,8 +106,28 @@ export function SkillEvidence({
             published.
           </p>
         )}
+        {roles.length > 0 && (
+          <ul className="flex flex-col gap-2">
+            {roles.map((role) => (
+              <li
+                key={role}
+                className="flex flex-col gap-1 rounded-lg border border-ink/15 bg-surface-raised p-4 outline-2 outline-offset-4 outline-ink"
+              >
+                <span className="self-start rounded-sm bg-accent px-2 py-0.5 font-mono text-xs text-on-accent">
+                  Role
+                </span>
+                <Link
+                  href="/experience#field-title"
+                  className="font-medium underline underline-offset-4"
+                >
+                  {role}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
         <ul className="flex flex-col gap-4">
-          {dossiers.map((dossier) => {
+          {ordered.map((dossier) => {
             const highlighted = used.has(dossier.slug);
             return (
               <li
