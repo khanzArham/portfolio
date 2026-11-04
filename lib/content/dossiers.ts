@@ -17,10 +17,9 @@ export const PROJECTS_DIR = path.join(process.cwd(), "content", "projects");
 export const MAX_EVAL_BYTES = 50 * 1024;
 
 export type Dossier = DossierFrontmatter & {
-  sections: Required<
-    Pick<Sections, "brief" | "method" | "failureLog" | "outcome">
-  > &
-    Pick<Sections, "data">;
+  sections: Required<Pick<Sections, "brief" | "method" | "outcome">> &
+    // The failure log is optional only while a project is in progress.
+    Pick<Sections, "data" | "failureLog">;
   evaluation?: Evaluation;
   isAiProject: boolean;
 };
@@ -76,12 +75,18 @@ export function parseDossier(input: DossierInput): {
   const parsedBody = parseSections(body);
   errors.push(...parsedBody.errors.map((e) => `${file} › body: ${e}`));
 
+  // A project still in progress (e.g. in design) has no real failures or
+  // evaluation yet; both become required once its status moves on.
+  const inProgress =
+    frontmatter.success && frontmatter.data.status === "in-progress";
+
   for (const [id, title] of [
     ["brief", "Brief"],
     ["method", "Method"],
     ["failureLog", "Failure Log"],
     ["outcome", "Outcome"],
   ] as const) {
+    if (id === "failureLog" && inProgress) continue;
     if (parsedBody.sections[id] === undefined) {
       errors.push(`${file} › body: missing required section "## ${title}"`);
     }
@@ -106,7 +111,7 @@ export function parseDossier(input: DossierInput): {
   }
 
   const isAiProject = fm.tags.some((tag) => AI_TAGS.includes(tag));
-  if (isAiProject && input.evaluationJson === undefined) {
+  if (isAiProject && !inProgress && input.evaluationJson === undefined) {
     errors.push(
       `${file}: AI project (tags ${AI_TAGS.join("/")}) needs ${path.basename(evalFile)} with real evaluation data`,
     );
@@ -208,15 +213,12 @@ export function collectDossiers({
 }
 
 /**
- * Fixtures and drafts render in development and in builds with
- * CONTENT_FIXTURES=1 (CI and E2E). Vercel never sets it, so neither reaches
- * the live site.
+ * Fixtures and drafts render only with CONTENT_FIXTURES=1 (CI and E2E), so
+ * `npm run dev` shows the real site. Vercel never sets it, so neither
+ * reaches the live site.
  */
 export function fixturesEnabled() {
-  return (
-    process.env.CONTENT_FIXTURES === "1" ||
-    process.env.NODE_ENV === "development"
-  );
+  return process.env.CONTENT_FIXTURES === "1";
 }
 
 let cache: Dossier[] | undefined;

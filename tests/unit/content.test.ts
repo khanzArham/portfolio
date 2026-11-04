@@ -11,6 +11,7 @@ import {
 } from "@/lib/content/dossiers";
 import {
   checkSkillCoverage,
+  roleEvidence,
   collectProfile,
   skillEvidence,
 } from "@/lib/content/profile";
@@ -82,6 +83,19 @@ describe("parseDossier", () => {
     expect(errors).toContainEqual(
       expect.stringContaining("AI project (tags ML/AI/RAG) needs"),
     );
+  });
+
+  it("lets in-progress projects skip the failure log and evaluation", () => {
+    const { dossier, errors } = parseDossier({
+      ...fixture,
+      source: withoutSection(
+        fixture.source.replace("status: archived", "status: in-progress"),
+        "Failure Log",
+      ),
+      evaluationJson: undefined,
+    });
+    expect(errors).toEqual([]);
+    expect(dossier?.sections.failureLog).toBeUndefined();
   });
 
   it("requires a Data section for ML projects only", () => {
@@ -158,16 +172,16 @@ describe("content folder", () => {
 
   // Independent of the shell running the tests: CI sets CONTENT_FIXTURES=1
   // for its build and E2E steps.
-  it("enables fixtures only with CONTENT_FIXTURES=1 or in development", () => {
+  it("enables fixtures only with CONTENT_FIXTURES=1", () => {
     vi.stubEnv("CONTENT_FIXTURES", "");
     vi.stubEnv("NODE_ENV", "production");
     expect(fixturesEnabled()).toBe(false);
 
-    vi.stubEnv("CONTENT_FIXTURES", "1");
-    expect(fixturesEnabled()).toBe(true);
-
-    vi.stubEnv("CONTENT_FIXTURES", "");
+    // The owner previews real content in development, not test fixtures.
     vi.stubEnv("NODE_ENV", "development");
+    expect(fixturesEnabled()).toBe(false);
+
+    vi.stubEnv("CONTENT_FIXTURES", "1");
     expect(fixturesEnabled()).toBe(true);
   });
 
@@ -205,6 +219,37 @@ describe("skills as evidence", () => {
     ]);
     expect(warnings).toEqual([expect.stringContaining('"Rust"')]);
   });
+
+  it("counts roles as evidence and checks their skill names", () => {
+    const skillList = [
+      { name: "Rust", category: "Languages" },
+      { name: "Go", category: "Languages" },
+    ] as const;
+    const experience = [
+      {
+        organization: "Acme",
+        role: "Intern",
+        period: { start: "2026-01", end: "2026-03" },
+        achievements: ["Wrote Rust."],
+        skills: ["rust", "Cobol"],
+      },
+    ];
+    expect(roleEvidence([...skillList], experience).get("Rust")).toEqual([
+      "Intern, Acme",
+    ]);
+
+    const { errors, warnings } = checkSkillCoverage(
+      [...skillList],
+      [],
+      experience,
+    );
+    expect(errors).toEqual([
+      expect.stringContaining(
+        'Acme skills: "Cobol" is not in content/skills.ts',
+      ),
+    ]);
+    expect(warnings).toEqual([expect.stringContaining('"Go"')]);
+  });
 });
 
 describe("draft dossiers", () => {
@@ -212,14 +257,22 @@ describe("draft dossiers", () => {
     collectDossiers(options).dossiers.map((d) => d.slug);
 
   it("are validated but kept off the public site", () => {
-    expect(slugs({})).not.toContain("order-tracker");
-    expect(slugs({ includeDrafts: true })).toEqual(
+    expect(slugs({ includeFixtures: true })).not.toContain("draft-fixture");
+    expect(slugs({ includeFixtures: true, includeDrafts: true })).toContain(
+      "draft-fixture",
+    );
+    expect(
+      collectDossiers({ includeFixtures: true, includeDrafts: true }).errors,
+    ).toEqual([]);
+  });
+
+  it("leaves the finished dossiers public", () => {
+    expect(slugs({})).toEqual(
       expect.arrayContaining([
         "order-tracker",
-        "smart-property-rental",
+        "rental-property-management",
         "brick-breaker",
       ]),
     );
-    expect(collectDossiers({ includeDrafts: true }).errors).toEqual([]);
   });
 });

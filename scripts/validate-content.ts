@@ -15,7 +15,11 @@ function main(): void {
   const warnings: string[] = [];
 
   if (!errors.length && profile.skills) {
-    const coverage = checkSkillCoverage(profile.skills, publicDossiers);
+    const coverage = checkSkillCoverage(
+      profile.skills,
+      publicDossiers,
+      profile.experience,
+    );
     errors.push(...coverage.errors);
     warnings.push(...coverage.warnings);
   }

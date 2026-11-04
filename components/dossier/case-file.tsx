@@ -58,11 +58,15 @@ export function CaseFile({ dossier }: { dossier: Dossier }) {
           },
         ]
       : []),
-    {
-      id: "failure-log",
-      title: "Failure Log",
-      content: <MdxBody source={sections.failureLog} />,
-    },
+    ...(sections.failureLog !== undefined
+      ? [
+          {
+            id: "failure-log",
+            title: "Failure Log",
+            content: <MdxBody source={sections.failureLog} />,
+          },
+        ]
+      : []),
     {
       id: "outcome",
       title: "Outcome",
@@ -81,6 +85,17 @@ export function CaseFile({ dossier }: { dossier: Dossier }) {
           facts.
         </p>
       )}
+      {dossier.status === "in-progress" &&
+        sections.failureLog === undefined && (
+          <p
+            role="note"
+            className="rounded-md border border-ink/15 bg-surface px-4 py-3 text-sm text-muted"
+          >
+            Work in progress: the failure log
+            {dossier.isAiProject && " and evaluation"} will be added once there
+            is real work to report.
+          </p>
+        )}
       <header className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
