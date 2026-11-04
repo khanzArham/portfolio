@@ -28,7 +28,7 @@ export default function ExperiencePage() {
           {experience.map((item) => (
             <li
               key={`${item.organization}-${item.period.start}`}
-              className="rounded-lg border border-ink/10 bg-surface-raised p-5"
+              className="rounded-lg border border-line bg-surface-raised p-5"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="text-lg font-semibold">
@@ -59,7 +59,7 @@ export default function ExperiencePage() {
           {education.map((item) => (
             <li
               key={`${item.institution}-${item.period.start}`}
-              className="rounded-lg border border-ink/10 bg-surface-raised p-5"
+              className="rounded-lg border border-line bg-surface-raised p-5"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="text-lg font-semibold">

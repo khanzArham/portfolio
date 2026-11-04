@@ -72,7 +72,7 @@ export function DossierSections({
       <div
         role="tablist"
         aria-label="Dossier sections"
-        className="hidden gap-1 overflow-x-auto border-b border-ink/10 md:flex"
+        className="hidden gap-1 overflow-x-auto border-b border-line md:flex"
       >
         {sections.map((section, index) => {
           const selected = active === section.id;
@@ -105,7 +105,7 @@ export function DossierSections({
           <div key={section.id} className="md:contents">
             {/* Accordion header: display:none on desktop, so screen readers
                 there get only the tabs. */}
-            <h2 className="border-t border-ink/10 md:hidden">
+            <h2 className="border-t border-line md:hidden">
               <button
                 type="button"
                 id={toggleId(section.id)}

@@ -34,7 +34,7 @@ const FIELDS: {
 ];
 
 const inputClass =
-  "w-full rounded-md border border-ink/25 bg-surface-raised px-3 py-2 text-ink aria-invalid:border-danger";
+  "w-full rounded-md border border-line-strong bg-surface-raised px-3 py-2 text-ink aria-invalid:border-danger";
 
 export function ContactForm() {
   const [state, formAction, pending] = useActionState(

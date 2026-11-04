@@ -39,7 +39,7 @@ export function ProjectFilter({ dossiers }: { dossiers: DossierSummary[] }) {
     });
 
   const buttonClass = (pressed: boolean) =>
-    `rounded-md px-3 py-1.5 font-mono text-sm transition-colors duration-fast ease-standard ${pressed ? "bg-ink text-paper" : "border border-ink/15 text-muted hover:text-ink"}`;
+    `rounded-md px-3 py-1.5 font-mono text-sm transition-colors duration-fast ease-standard ${pressed ? "bg-ink text-paper" : "border border-line text-muted hover:text-ink"}`;
 
   return (
     <div className="flex flex-col gap-6">
