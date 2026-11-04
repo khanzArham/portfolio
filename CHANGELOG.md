@@ -6,6 +6,14 @@ All notable changes to this site. Dates are YYYY-MM-DD.
 
 ### Added
 
+- **First public case files.** Order Tracker (CASE-003, featured on home),
+  Rental Property Management System (CASE-002, renamed from Smart Property
+  Rental System) and Brick Breaker (CASE-001), each with the owner's role,
+  method, a real failure log and outcome.
+- **CareerSyncAI case file (CASE-004, in progress).** The final year project
+  in its design phase: the problem, the owner's role and the planned
+  architecture. Dossiers marked `in-progress` may now omit the failure log
+  and evaluation until there is real work to report; the page says so.
 - **"Ask the site" search on the Work page (Step 20).** Keyword search works
   immediately; semantic search is opt-in and runs entirely in the visitor's
   browser. Nothing typed is sent to a server, and the page makes no
@@ -17,6 +25,15 @@ All notable changes to this site. Dates are YYYY-MM-DD.
 
 ### Changed
 
+- **Home page.** The journey map runs left to right on wider screens (still
+  top to bottom on phones), so the featured dossiers show without scrolling.
+  Three dossiers are featured, with a link to all case files.
+- **Skills page.** The counts beside each skill are gone. Choosing a skill
+  moves the dossiers that used it to the top, and also lists the roles that
+  used it (from the internship), so more skills lead to evidence.
+- **Footer.** GitHub, LinkedIn and Email links now have icons.
+- **Development preview.** `npm run dev` no longer shows the test fixtures;
+  they appear only with `CONTENT_FIXTURES=1` (CI and tests).
 - **Faster first load (Step 22).** The command palette and mobile menu load
   on demand instead of with every page, Fraunces ships one weight instead of
   the full variable range, and the contact form validates with `zod/mini`.
