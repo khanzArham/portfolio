@@ -40,20 +40,29 @@
  */
 @keyframes journey-fill {
   from {
-    transform: scaleY(0);
+    scale: var(--journey-fill-from);
   }
   to {
-    transform: scaleY(1);
+    scale: 1;
   }
 }
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .journey-path-fill {
+      /* Grows downward on small screens, left to right from md up. */
+      --journey-fill-from: 1 0;
       transform-origin: top;
       animation: journey-fill linear both;
       animation-timeline: view();
       animation-range: entry 10% cover 60%;
+    }
+
+    @media (width >= 48rem) {
+      .journey-path-fill {
+        --journey-fill-from: 0 1;
+        transform-origin: left;
+      }
     }
   }
 }
