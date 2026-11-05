@@ -29,6 +29,11 @@
   --color-tech: #4f46e5; /* 6.29:1 on cards */
   --color-success: #15803d; /* 4.79:1 */
   --color-danger: #b91c1c; /* 6.18:1 */
+  /* Window controls on terminal-style title bars (macOS red, amber, green):
+     decoration only, the same in both themes. */
+  --color-window-close: #ff5f57;
+  --color-window-min: #febc2e;
+  --color-window-max: #28c840;
 
   /* 4px base scale: p-1 = 4px, p-2 = 8px, ... */
   --spacing: 0.25rem;

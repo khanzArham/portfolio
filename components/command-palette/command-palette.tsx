@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import type { DossierSummary } from "@/lib/content/dossiers";
 import { matchesQuery } from "@/lib/palette";
+import { switchTheme } from "@/lib/theme-transition";
 import type { LoadedIndex, SearchResult } from "@/lib/search/client";
 import { contactItem, site, visibleNavItems } from "@/lib/site";
 
@@ -187,7 +188,7 @@ export default function PaletteDialog({
                       key={t.theme}
                       value={`theme ${t.theme}`}
                       onSelect={() => {
-                        setTheme(t.theme);
+                        switchTheme(setTheme, t.theme);
                         onOpenChange(false);
                       }}
                       className={itemClass}

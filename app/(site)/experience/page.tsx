@@ -21,14 +21,17 @@ export default function ExperiencePage() {
       </h1>
 
       <section aria-labelledby="field-title" className="flex flex-col gap-6">
-        <h2 id="field-title" className="font-display text-2xl font-semibold">
+        <h2
+          id="field-title"
+          className="reveal-left font-display text-2xl font-semibold"
+        >
           Field
         </h2>
         <ol className="flex flex-col gap-6">
           {experience.map((item) => (
             <li
               key={`${item.organization}-${item.period.start}`}
-              className="rounded-lg border border-line bg-surface-raised p-5"
+              className="reveal rounded-lg border border-line bg-surface-raised p-5"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="text-lg font-semibold">
@@ -52,14 +55,17 @@ export default function ExperiencePage() {
       </section>
 
       <section aria-labelledby="origin-title" className="flex flex-col gap-6">
-        <h2 id="origin-title" className="font-display text-2xl font-semibold">
+        <h2
+          id="origin-title"
+          className="reveal-left font-display text-2xl font-semibold"
+        >
           Origin
         </h2>
         <ol className="flex flex-col gap-6">
           {education.map((item) => (
             <li
               key={`${item.institution}-${item.period.start}`}
-              className="rounded-lg border border-line bg-surface-raised p-5"
+              className="reveal rounded-lg border border-line bg-surface-raised p-5"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="text-lg font-semibold">

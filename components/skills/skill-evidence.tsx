@@ -21,6 +21,21 @@ const slug = (text: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
+/**
+ * Which column (0 left, 1 right) each box goes in. The first four alternate
+ * (AI and Frontend left, Backend and Tools right); any further box joins
+ * whichever column is shorter so far, estimated from its label lengths.
+ */
+function splitColumns(groups: SkillGroup[]): number[] {
+  const height = [0, 0];
+  return groups.map((group, index) => {
+    const column = index < 4 ? index % 2 : height[0] <= height[1] ? 0 : 1;
+    height[column] +=
+      40 + group.skills.reduce((sum, s) => sum + s.name.length + 6, 0);
+    return column;
+  });
+}
+
 const list = (titles: string[]) =>
   titles.length < 3
     ? titles.join(" and ")
@@ -95,21 +110,23 @@ export function SkillEvidence({
       ? `${selected} ${parts.join(", and ")}.`
       : `No published work shows ${selected} yet.`;
 
+  const columns = splitColumns(groups);
+
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_minmax(0,24rem)]">
-      {/* Two columns filled alternately (1st and 3rd left, 2nd and 4th
-          right). Each column stacks its boxes with the same gap, so every
-          box is as tall as its content and no space is left between. */}
+      {/* Two columns (see splitColumns). Each column stacks its boxes with
+          the same gap, so every box is as tall as its content and no space
+          is left between. */}
       <div className="grid content-start items-start gap-4 sm:grid-cols-2">
         {[0, 1].map((column) => (
           <div key={column} className="flex flex-col gap-4">
             {groups
-              .filter((_, index) => index % 2 === column)
+              .filter((_, index) => columns[index] === column)
               .map(({ category, skills }) => (
                 <section
                   key={category}
                   aria-labelledby={`skills-${slug(category)}`}
-                  className="flex flex-col gap-4 rounded-lg border border-line bg-surface-raised p-5"
+                  className="reveal flex flex-col gap-4 rounded-lg border border-line bg-surface-raised p-5"
                 >
                   <h2
                     id={`skills-${slug(category)}`}
@@ -121,7 +138,7 @@ export function SkillEvidence({
                     {skills.map((skill) => {
                       const pressed = selected === skill.name;
                       return (
-                        <li key={skill.name}>
+                        <li key={skill.name} className="reveal-pop">
                           <button
                             type="button"
                             aria-pressed={pressed}
@@ -143,9 +160,12 @@ export function SkillEvidence({
       <section
         ref={evidenceRef}
         aria-labelledby="skills-evidence"
-        className="flex scroll-mt-20 flex-col gap-4 lg:sticky lg:top-8 lg:self-start"
+        className="flex scroll-mt-24 flex-col gap-4 lg:sticky lg:top-24 lg:self-start"
       >
-        <h2 id="skills-evidence" className="font-display text-xl font-semibold">
+        <h2
+          id="skills-evidence"
+          className="reveal-left font-display text-xl font-semibold"
+        >
           Evidence
         </h2>
         <p role="status" className="text-muted">

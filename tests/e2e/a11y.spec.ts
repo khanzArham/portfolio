@@ -25,7 +25,9 @@ async function expectNoBlockingViolations(page: Page) {
 
 for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`axe (${colorScheme})`, () => {
-    test.use({ colorScheme });
+    // Reduced motion: scroll reveals would otherwise catch text mid-fade,
+    // and contrast is judged on the settled page.
+    test.use({ colorScheme, reducedMotion: "reduce" });
 
     for (const route of routes) {
       test(route, async ({ page }) => {
