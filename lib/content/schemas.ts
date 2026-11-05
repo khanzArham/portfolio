@@ -207,6 +207,7 @@ export const SKILL_CATEGORIES = [
   "Backend & Databases",
   "Frontend Development",
   "Tools & Workflow",
+  "Software Engineering",
 ] as const;
 
 export const skillsSchema = z
