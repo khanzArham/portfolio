@@ -4,6 +4,32 @@ All notable changes to this site. Dates are YYYY-MM-DD.
 
 ## Unreleased
 
+Nothing yet.
+
+## [1.0.0] - 2026-11-05
+
+The first public release (MVP): a Software & AI Engineer portfolio built as
+a set of case files.
+
+- **Four case files:** CareerSyncAI (final year project, in design), Order
+  Tracker, Smart Property Rental Management System and Brick Breaker, each
+  with role, method, a real failure log and outcome.
+- **Pages:** home with journey map and featured work, Work with filters and
+  search, Experience, Skills as evidence, About, Contact, and `/llms.txt`.
+- **Search:** keyword search everywhere (Ctrl/⌘ K) and opt-in semantic
+  search that runs in the browser.
+- **Contact:** form with email delivery and rate limiting, plus a résumé
+  download.
+- **Quality:** WCAG 2.2 AA in both themes (axe in CI), visual regression,
+  and Lighthouse budgets on every pull request. On the final preview, every
+  page scored 99 or above for Performance (median of three runs) and 100 for
+  Accessibility, Best Practices and SEO, with LCP 2.0–2.1 s and no layout
+  shift.
+
+Still open after launch: the mid-range Android timing for semantic search
+(see Micro-AI measurements below), cross-device checks on real phones, and
+the peer read-through.
+
 ### Added
 
 - **Resume download.** The Software & AI Engineer CV (Nov 2026) is at
