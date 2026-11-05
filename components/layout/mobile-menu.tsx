@@ -7,7 +7,7 @@ import { lazy, Suspense, useRef, useState } from "react";
 const loadDialog = () => import("@/components/layout/mobile-menu-dialog");
 const MobileMenuDialog = lazy(loadDialog);
 
-export function MobileMenu() {
+export function MobileMenu({ hasResume }: { hasResume: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
@@ -48,6 +48,7 @@ export function MobileMenu() {
             open={open}
             onOpenChange={show}
             returnFocusTo={button}
+            hasResume={hasResume}
           />
         </Suspense>
       )}

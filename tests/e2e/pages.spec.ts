@@ -84,3 +84,15 @@ test("home features the fixture dossier", async ({ page }) => {
   await featured.getByRole("link", { name: "Fixture Dossier" }).click();
   await expect(page).toHaveURL(/\/projects\/fixture$/);
 });
+
+test("the resume downloads from home and About", async ({ page, request }) => {
+  for (const route of ["/", "/about"]) {
+    await page.goto(route);
+    await expect(
+      page.getByRole("link", { name: "Download Resume" }),
+    ).toHaveAttribute("href", "/resume.pdf");
+  }
+  const response = await request.get("/resume.pdf");
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("application/pdf");
+});
