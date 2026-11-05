@@ -12,7 +12,7 @@ period:
   end: 2024
 updated: 2026-11-04
 tags: [Software]
-stack: [C++, Git, GitHub]
+stack: [C++, Object-Oriented Programming, Git, GitHub]
 ---
 
 ## Brief
@@ -35,7 +35,7 @@ I built it to see inheritance, polymorphism and encapsulation working in a progr
 
 **Why:** collisions were checked only at discrete frames, by testing whether two bounding boxes overlapped. At high speed the ball travelled far enough in one frame to land deep inside an object before the check ever saw it.
 
-**What I changed:** I tied the overlap test to the ball's movement for that frame (its velocity scaled by delta time) and reworked how velocity flips on impact, so a fast ball bounces off cleanly instead of sinking in.
+**What I changed:** I replaced the end-of-frame check with continuous collision detection: the ball's movement for the frame (its velocity scaled by delta time) is tested against the bounding boxes along its whole path, so a hit is found even when one frame would carry the ball through an object. I also reworked how velocity flips on impact, so a fast ball bounces off cleanly instead of sinking in.
 
 ## Outcome
 
@@ -44,4 +44,4 @@ A working game, and a practical grounding in:
 - designing classes that keep their own state;
 - memory allocation with raw and smart pointers;
 - structuring a game loop;
-- collision detection, including why discrete checks break down at high speed.
+- continuous collision detection, and why discrete checks break down at high speed.

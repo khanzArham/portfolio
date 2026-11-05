@@ -71,7 +71,7 @@ export function PaletteLauncher({ dossiers }: { dossiers: PaletteDossier[] }) {
         onClick={() => show(true)}
         onPointerEnter={() => void loadDialog()}
         onFocus={() => void loadDialog()}
-        className="inline-flex h-10 items-center gap-2 rounded-md px-2.5 text-sm text-ink transition-colors duration-fast ease-standard hover:bg-surface md:border md:border-line"
+        className="inline-flex h-10 cursor-text items-center gap-2 rounded-md px-2.5 text-sm text-ink transition-colors duration-fast ease-standard hover:bg-surface md:border md:border-line"
       >
         <svg
           aria-hidden="true"
@@ -85,10 +85,10 @@ export function PaletteLauncher({ dossiers }: { dossiers: PaletteDossier[] }) {
           <circle cx="11" cy="11" r="6.5" />
           <path d="M16 16l4.5 4.5" />
         </svg>
-        <span className="sr-only md:not-sr-only">Search</span>
+        <span className="sr-only lg:not-sr-only">Search</span>
         <kbd
           aria-hidden="true"
-          className="hidden font-mono text-xs text-muted md:inline"
+          className="hidden font-mono text-xs whitespace-nowrap text-muted lg:inline"
         >
           {shortcut}
         </kbd>

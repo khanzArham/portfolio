@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { sendContact } from "@/app/actions/contact";
+import { buttonClass } from "@/components/ui/button";
+import { PaperPlaneIcon } from "@/components/ui/icons";
 import {
   contactSchema,
   HONEYPOT_FIELD,
@@ -21,20 +23,40 @@ const FIELDS: {
   autoComplete?: string;
   maxLength: number;
   multiline?: boolean;
+  /** Spans both columns of the form grid on wider screens. */
+  wide?: boolean;
+  /** An example of what to type; the label still names the field. */
+  placeholder: string;
 }[] = [
-  { name: "name", label: "Name", autoComplete: "name", maxLength: 100 },
+  {
+    name: "name",
+    label: "Name",
+    autoComplete: "name",
+    maxLength: 100,
+    placeholder: "e.g. John Doe",
+  },
   {
     name: "email",
     label: "Email",
     type: "email",
     autoComplete: "email",
     maxLength: 200,
+    placeholder: "you@company.com",
   },
-  { name: "message", label: "Message", maxLength: 5000, multiline: true },
+  {
+    name: "message",
+    label: "Message",
+    maxLength: 5000,
+    multiline: true,
+    wide: true,
+    placeholder: "Write your message here...",
+  },
 ];
 
 const inputClass =
-  "w-full rounded-md border border-line-strong bg-surface-raised px-3 py-2 text-ink aria-invalid:border-danger";
+  // Hover darkens the border; focus shows an accent glow, which replaces the
+  // global focus outline here.
+  "w-full rounded-md border border-line-strong bg-surface-raised px-3 py-2.5 text-ink transition-colors duration-fast ease-standard placeholder:text-muted hover:border-muted focus:border-accent focus:ring-1 focus:ring-accent focus-visible:outline-none aria-invalid:border-danger";
 
 export function ContactForm() {
   const [state, formAction, pending] = useActionState(
@@ -72,7 +94,7 @@ export function ContactForm() {
       action={formAction}
       onSubmit={onSubmit}
       noValidate
-      className="flex max-w-prose flex-col gap-5"
+      className="grid max-w-2xl grid-cols-1 gap-4 md:grid-cols-2"
     >
       {FIELDS.map((field) => {
         const id = `contact-${field.name}`;
@@ -80,6 +102,7 @@ export function ContactForm() {
         const shared = {
           id,
           maxLength: field.maxLength,
+          placeholder: field.placeholder,
           "aria-invalid": error ? true : undefined,
           "aria-describedby": error ? `${id}-error` : undefined,
           className: inputClass,
@@ -87,7 +110,10 @@ export function ContactForm() {
         };
 
         return (
-          <div key={field.name} className="flex flex-col gap-1.5">
+          <div
+            key={field.name}
+            className={`flex flex-col gap-2 ${field.wide ? "md:col-span-2" : ""}`}
+          >
             <label htmlFor={id} className="font-medium">
               {field.label}
             </label>
@@ -125,7 +151,7 @@ export function ContactForm() {
       </div>
 
       {state.status === "error" && (
-        <p role="alert" className="text-danger">
+        <p role="alert" className="text-danger md:col-span-2">
           {state.message}
         </p>
       )}
@@ -133,8 +159,10 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex h-11 items-center justify-center self-start rounded-md bg-accent px-5 font-medium text-on-accent disabled:opacity-60"
+        // Full width on phones, compact and left-aligned from md up.
+        className={`${buttonClass("primary", "px-6")} w-full md:col-span-2 md:w-fit md:justify-self-start`}
       >
+        <PaperPlaneIcon />
         {pending ? "Sending…" : "Send message"}
       </button>
     </form>

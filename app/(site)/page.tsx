@@ -1,5 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
 import Link from "next/link";
 import { DossierCard } from "@/components/dossier/dossier-card";
 import { JourneyMap } from "@/components/journey/journey-map";
@@ -7,6 +5,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { getDossiers, toSummary } from "@/lib/content/dossiers";
 import { getEducation, getExperience } from "@/lib/content/profile";
 import { buildJourney } from "@/lib/journey";
+import { hasResume } from "@/lib/public-files";
 import { pageMetadata, personJsonLd } from "@/lib/seo";
 import { projectsInProgress, site } from "@/lib/site";
 
@@ -17,11 +16,6 @@ export const metadata = pageMetadata({
 
 const MAX_FEATURED = 3;
 
-// The resume button appears once public/resume.pdf exists (read at build).
-const hasResume = fs.existsSync(
-  path.join(process.cwd(), "public", "resume.pdf"),
-);
-
 export default function HomePage() {
   const dossiers = getDossiers();
   const featured = dossiers.filter((d) => d.featured).slice(0, MAX_FEATURED);
@@ -29,7 +23,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16">
       <JsonLd data={personJsonLd} />
-      <section aria-labelledby="hero-title" className="flex flex-col gap-6">
+      <section
+        aria-labelledby="hero-title"
+        className="hero-exit flex flex-col gap-6"
+      >
         <p className="inline-flex items-center gap-2 self-start rounded-full border border-line bg-surface-raised px-3 py-1 font-mono text-xs text-muted">
           <span aria-hidden="true" className="size-2 rounded-full bg-success" />
           {site.availability}
@@ -49,7 +46,7 @@ export default function HomePage() {
           >
             View work
           </Link>
-          {hasResume && (
+          {hasResume() && (
             <a
               href="/resume.pdf"
               download
@@ -84,7 +81,7 @@ export default function HomePage() {
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
             <h2
               id="featured-title"
-              className="font-display text-2xl font-semibold"
+              className="reveal-left font-display text-2xl font-semibold"
             >
               Featured dossiers
             </h2>

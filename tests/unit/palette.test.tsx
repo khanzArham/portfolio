@@ -227,6 +227,27 @@ describe("SkillEvidence", () => {
     );
   });
 
+  it("puts boxes after the fourth in the shorter column", () => {
+    const box = (category: string, names: string[]) => ({
+      category,
+      skills: names.map((name) => ({ name, dossiers: [], roles: [] })),
+    });
+    const five = [
+      box("Long", ["A very long skill name", "Another long skill name"]),
+      box("Short", ["Go"]),
+      box("Third", ["Rust"]),
+      box("Fourth", ["Zig"]),
+      box("Fifth", ["Lua"]),
+    ];
+    render(<SkillEvidence groups={five} dossiers={summaries} />);
+    const column = (name: string) =>
+      screen.getByRole("region", { name }).parentElement;
+    expect(column("Third")).toBe(column("Long"));
+    expect(column("Fourth")).toBe(column("Short"));
+    // The left column is taller (the long box), so the fifth goes right.
+    expect(column("Fifth")).toBe(column("Short"));
+  });
+
   it("says so when no work shows a skill yet", async () => {
     const user = userEvent.setup();
     render(<SkillEvidence groups={groups} dossiers={summaries} />);

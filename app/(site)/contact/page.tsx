@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Contact",
-  description: `Contact ${site.owner} by message or email.`,
+  description: `Contact ${site.owner} about a role, or send feedback on the site or a project.`,
   path: "/contact",
 });
 
@@ -15,15 +15,17 @@ export default function ContactPage() {
         <h1 className="font-display text-4xl font-semibold tracking-tight">
           Contact
         </h1>
-        <p className="max-w-prose text-muted">
-          Send a message below, or email{" "}
+        {/* Left-aligned: the long email address would stretch a justified line. */}
+        <p className="max-w-2xl text-left text-muted">
+          Have a project in mind, a job opportunity, or feedback? Feel free to
+          reach out directly via email at{" "}
           <a
             href={`mailto:${site.email}`}
             className="text-ink underline underline-offset-4"
           >
             {site.email}
-          </a>
-          .
+          </a>{" "}
+          or send a message below.
         </p>
       </div>
       <ContactForm />

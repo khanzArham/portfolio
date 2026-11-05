@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useSyncExternalStore } from "react";
+import { switchTheme } from "@/lib/theme-transition";
 
 const THEMES = ["system", "light", "dark"] as const;
 type ThemeChoice = (typeof THEMES)[number];
@@ -39,7 +40,7 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      onClick={() => setTheme(next)}
+      onClick={() => switchTheme(setTheme, next)}
       aria-label={`Theme: ${LABELS[current]}. Switch to ${LABELS[next]}.`}
       title={`Theme: ${LABELS[current]}`}
       className="inline-flex size-10 items-center justify-center rounded-md text-ink transition-colors duration-fast ease-standard hover:bg-surface"

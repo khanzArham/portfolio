@@ -14,6 +14,8 @@
 @layer base {
   :root {
     color-scheme: light;
+    /* In-page jumps clear the sticky header. */
+    scroll-padding-top: 5rem;
   }
 
   .dark {
@@ -28,6 +30,35 @@
     transition:
       background-color var(--duration-base) var(--ease-standard),
       color var(--duration-base) var(--ease-standard);
+  }
+
+  /* Balanced line breaks: no lone word on the last line. */
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  /*
+   * Paragraphs are justified only where the measure is wide enough (sm and
+   * up). On phones and in narrow cards, justified text without hyphenation
+   * opens wide gaps between words, so those stay left-aligned. Words are
+   * never split with hyphens. Headings and single lines are unaffected.
+   */
+  @media (width >= 40rem) {
+    /* Monospace labels (pills, dates, metadata) are not prose. */
+    p:not(.font-mono) {
+      text-align: justify;
+    }
+  }
+
+  /* Tailwind v4 leaves buttons with the default arrow; anything clickable
+     shows the hand. */
+  button:not(:disabled),
+  [role="button"],
+  summary,
+  select {
+    cursor: pointer;
   }
 
   :focus-visible {
@@ -88,4 +119,208 @@
 
 .case-file-enter {
   animation: file-slide-in var(--duration-base) var(--ease-standard) both;
+}
+
+/*
+ * Mobile menu (Radix Dialog): the drawer slides in from the right, the
+ * backdrop fades and the links rise in one after another. Radix waits for
+ * the closing animation before it unmounts. The motion tokens drop to 0ms
+ * under reduced motion, and the stagger only applies without it.
+ */
+@keyframes drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes drawer-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+.drawer[data-state="open"] {
+  animation: drawer-in var(--duration-base) var(--ease-standard);
+}
+
+.drawer[data-state="closed"] {
+  animation: drawer-out var(--duration-base) var(--ease-standard);
+}
+
+.drawer-backdrop[data-state="open"] {
+  animation: fade-in var(--duration-base) var(--ease-standard);
+}
+
+.drawer-backdrop[data-state="closed"] {
+  animation: fade-out var(--duration-base) var(--ease-standard);
+}
+
+.drawer[data-state="open"] .drawer-item {
+  animation: rise-in var(--duration-base) var(--ease-standard) both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .drawer-item:nth-child(2) {
+    animation-delay: 40ms;
+  }
+  .drawer-item:nth-child(3) {
+    animation-delay: 80ms;
+  }
+  .drawer-item:nth-child(4) {
+    animation-delay: 120ms;
+  }
+  .drawer-item:nth-child(5) {
+    animation-delay: 160ms;
+  }
+  .drawer-cta {
+    animation-delay: 200ms;
+  }
+}
+
+/*
+ * Scroll effects (CSS scroll-driven animations, no JavaScript). Elements
+ * marked .reveal rise into place as they enter the viewport, and a thin bar
+ * under the header tracks reading progress. Browsers without
+ * animation-timeline, and reduced motion, show everything static and hide
+ * the bar.
+ */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.scroll-progress {
+  display: none;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      display: block;
+      transform-origin: left;
+      animation: progress linear both;
+      animation-timeline: scroll(root);
+    }
+
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/*
+ * More scroll effects, on the same terms as .reveal above: the hero eases
+ * away as it leaves, section titles slide in, skill chips pop in, and the
+ * journey dots pop in turn as the map scrolls into view.
+ */
+@keyframes hero-out {
+  to {
+    opacity: 0.25;
+    transform: translateY(-2rem) scale(0.98);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-1.5rem);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-exit {
+      animation: hero-out linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    .reveal-left {
+      animation: slide-in-left linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+
+    .reveal-pop {
+      animation: pop-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+
+    .journey {
+      view-timeline-name: --journey;
+    }
+
+    .journey-dot {
+      animation: pop-in linear both;
+      animation-timeline: --journey;
+    }
+
+    .journey li:nth-child(1) .journey-dot {
+      animation-range: entry 20% entry 60%;
+    }
+
+    .journey li:nth-child(2) .journey-dot {
+      animation-range: entry 50% entry 90%;
+    }
+
+    .journey li:nth-child(n + 3) .journey-dot {
+      animation-range: entry 80% cover 40%;
+    }
+  }
+}
+
+/*
+ * Theme switches cross-fade the whole page (lib/theme-transition.ts uses the
+ * View Transitions API; browsers without it switch instantly).
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 400ms;
+  animation-timing-function: var(--ease-standard);
 }

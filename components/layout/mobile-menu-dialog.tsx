@@ -14,23 +14,25 @@ export default function MobileMenuDialog({
   open,
   onOpenChange,
   returnFocusTo,
+  hasResume,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   returnFocusTo: RefObject<HTMLButtonElement | null>;
+  hasResume: boolean;
 }) {
   const close = () => onOpenChange(false);
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-paper/80 backdrop-blur-sm" />
+        <Dialog.Overlay className="drawer-backdrop fixed inset-0 z-40 bg-paper/80 backdrop-blur-sm" />
         <Dialog.Content
           onCloseAutoFocus={(event) => {
             event.preventDefault();
             returnFocusTo.current?.focus();
           }}
-          className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col gap-6 border-l border-line bg-surface-raised p-4"
+          className="drawer fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col gap-6 border-l border-line bg-surface-raised p-4"
         >
           <div className="flex items-center justify-between">
             <Dialog.Title className="font-mono text-sm text-muted">
@@ -63,7 +65,7 @@ export default function MobileMenuDialog({
           <nav aria-label="Main">
             <ul className="flex flex-col gap-1">
               {visibleNavItems.map((item) => (
-                <li key={item.href}>
+                <li key={item.href} className="drawer-item">
                   <NavLink
                     href={item.href}
                     onClick={close}
@@ -79,10 +81,32 @@ export default function MobileMenuDialog({
           <Link
             href={contactItem.href}
             onClick={close}
-            className="inline-flex h-11 items-center justify-center rounded-md bg-accent px-4 font-medium text-on-accent"
+            className="drawer-item drawer-cta inline-flex h-11 items-center justify-center rounded-md bg-accent px-4 font-medium text-on-accent"
           >
             {contactItem.label}
           </Link>
+          {hasResume && (
+            <a
+              href="/resume.pdf"
+              download
+              onClick={close}
+              className="drawer-item drawer-cta -mt-3 inline-flex h-11 items-center justify-center gap-2 rounded-md border border-line-strong px-4 font-medium"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" />
+              </svg>
+              Download Resume
+            </a>
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

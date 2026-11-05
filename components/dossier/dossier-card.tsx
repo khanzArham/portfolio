@@ -22,7 +22,7 @@ const MAX_STACK = 6;
  */
 export function DossierCard({ dossier }: { dossier: DossierSummary }) {
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface-raised transition-colors duration-fast ease-standard hover:border-accent">
+    <article className="reveal relative flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface-raised transition-colors duration-fast ease-standard hover:border-accent">
       <WindowBar path={`~/projects/${dossier.slug}`} />
 
       <div className="flex flex-1 flex-col gap-3 p-5">
@@ -44,7 +44,8 @@ export function DossierCard({ dossier }: { dossier: DossierSummary }) {
             {dossier.title}
           </Link>
         </h3>
-        <p className="text-muted">{dossier.summary}</p>
+        {/* Card columns are too narrow to justify cleanly. */}
+        <p className="text-left text-muted">{dossier.summary}</p>
         <div className="flex flex-wrap gap-2 pt-1">
           {dossier.stack.slice(0, MAX_STACK).map((item) => (
             <Tag key={item} tone="tech">
@@ -59,7 +60,7 @@ export function DossierCard({ dossier }: { dossier: DossierSummary }) {
             gets two lines of room whatever its length. */}
         <div className="mt-auto flex flex-col gap-3 pt-2">
           {dossier.challenge && (
-            <p className="min-h-10 text-sm">
+            <p className="min-h-10 text-left text-sm">
               <span className="font-mono text-xs text-accent">challenge: </span>
               {dossier.challenge}
             </p>

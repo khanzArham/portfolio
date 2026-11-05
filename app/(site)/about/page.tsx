@@ -1,13 +1,18 @@
-import fs from "node:fs";
-import path from "node:path";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/json-ld";
+import { buttonClass } from "@/components/ui/button";
+import {
+  DownloadIcon,
+  MessageIcon,
+  PaperPlaneIcon,
+} from "@/components/ui/icons";
 import { newTab, SocialIcon, socialLinks } from "@/components/ui/social";
 import { WindowBar } from "@/components/ui/window-bar";
 import { getDossiers } from "@/lib/content/dossiers";
 import { getEducation, getExperience } from "@/lib/content/profile";
 import { formatPeriod, STATUS_LABELS } from "@/lib/format";
 import { pageMetadata, personJsonLd } from "@/lib/seo";
+import { hasResume } from "@/lib/public-files";
 import { site } from "@/lib/site";
 
 export const metadata = pageMetadata({
@@ -15,11 +20,6 @@ export const metadata = pageMetadata({
   description: `About ${site.owner}: background, values and how to get in touch.`,
   path: "/about",
 });
-
-// The resume button appears once public/resume.pdf exists (read at build).
-const hasResume = fs.existsSync(
-  path.join(process.cwd(), "public", "resume.pdf"),
-);
 
 /**
  * The bio, with a profile card beside it on wide screens: facts the site
@@ -33,6 +33,7 @@ export default function AboutPage() {
   const current = getDossiers().find((d) => d.status === "in-progress");
 
   const facts = [
+    { label: "Location", value: site.location },
     {
       label: "Education",
       value: `${education.degree}, ${education.institution}`,
@@ -60,16 +61,11 @@ export default function AboutPage() {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-          <p>
-            <Link href="/contact" className="underline underline-offset-4">
-              Get in touch
-            </Link>
-          </p>
         </div>
 
         <aside
           aria-label="Profile"
-          className="overflow-hidden rounded-lg border border-line bg-surface-raised lg:sticky lg:top-8"
+          className="overflow-hidden rounded-lg border border-line bg-surface-raised lg:sticky lg:top-24"
         >
           <WindowBar path="~/about/profile" />
 
@@ -90,7 +86,11 @@ export default function AboutPage() {
                 <div key={fact.label} className="flex flex-col gap-0.5">
                   <dt className="font-mono text-xs text-muted">{fact.label}</dt>
                   <dd>{fact.value}</dd>
-                  <dd className="font-mono text-xs text-muted">{fact.meta}</dd>
+                  {fact.meta && (
+                    <dd className="font-mono text-xs text-muted">
+                      {fact.meta}
+                    </dd>
+                  )}
                 </div>
               ))}
               {current && (
@@ -127,9 +127,8 @@ export default function AboutPage() {
                 </li>
               ))}
             </ul>
-            <p className="-mt-2 font-mono text-xs text-muted">{site.email}</p>
 
-            {hasResume && (
+            {hasResume() && (
               <a
                 href="/resume.pdf"
                 download
@@ -141,6 +140,55 @@ export default function AboutPage() {
           </div>
         </aside>
       </div>
+
+      {/* One card for each kind of reader, full width below the bio. */}
+      <section aria-labelledby="about-contact" className="flex flex-col gap-4">
+        <h2 id="about-contact" className="sr-only">
+          Get in touch
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="reveal flex flex-col gap-4 rounded-lg border border-line bg-surface-raised p-5 transition-colors duration-fast ease-standard hover:border-accent/50">
+            <span className="inline-flex self-start rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 font-mono text-[0.6875rem] font-medium tracking-wider text-accent uppercase">
+              For employers
+            </span>
+            <p className="text-left">
+              Looking to hire an AI or Software Engineer? Explore my resume or
+              start a conversation about open opportunities.
+            </p>
+            <div className="mt-auto flex flex-wrap gap-2 pt-1">
+              <Link href="/contact" className={buttonClass()}>
+                <PaperPlaneIcon />
+                Get in touch
+              </Link>
+              {hasResume() && (
+                <a
+                  href="/resume.pdf"
+                  download
+                  className={buttonClass("secondary")}
+                >
+                  <DownloadIcon />
+                  Resume
+                </a>
+              )}
+            </div>
+          </div>
+          <div className="reveal flex flex-col gap-4 rounded-lg border border-line bg-surface-raised p-5 transition-colors duration-fast ease-standard hover:border-accent/50">
+            <span className="inline-flex self-start rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 font-mono text-[0.6875rem] font-medium tracking-wider text-accent uppercase">
+              For visitors
+            </span>
+            <p className="text-left">
+              Have feedback or ideas for improvement? Share your insights to
+              help me refine these projects.
+            </p>
+            <div className="mt-auto pt-1">
+              <Link href="/contact" className={buttonClass("secondary")}>
+                <MessageIcon />
+                Send feedback
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

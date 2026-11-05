@@ -3,7 +3,9 @@ import type { skillsSchema } from "@/lib/content/schemas";
 
 // Source: Arham_Zahid_Khan_Generic_Software_Developer_CV_v2 (Oct 2026),
 // "Technical Skills", plus VS Code, Vercel, HTML5 / CSS3, LangChain and
-// CrewAI (owner, 2026-11-04), and Pydantic from CareerSyncAI's design. Names must match dossier `stack` entries and
+// CrewAI (owner, 2026-11-04), Pydantic from CareerSyncAI's design, and
+// Postman, OOP and System Architecture from the Software & AI Engineer CV
+// (Nov 2026). MS SQL is gone: that CV does not list it. Names must match dossier `stack` entries and
 // role `skills` (case-insensitive); that match links a skill to its
 // evidence. `implies` lists skills that using this one also shows, so
 // work that lists MySQL is evidence for SQL too.
@@ -42,7 +44,6 @@ export const skills = [
   { name: "SQL", category: "Backend & Databases" },
   { name: "MySQL", category: "Backend & Databases", implies: ["SQL"] },
   { name: "PostgreSQL", category: "Backend & Databases", implies: ["SQL"] },
-  { name: "MS SQL", category: "Backend & Databases", implies: ["SQL"] },
   { name: "Firebase", category: "Backend & Databases" },
   { name: "Alembic", category: "Backend & Databases", implies: ["Python"] },
   { name: "JWT Authentication", category: "Backend & Databases" },
@@ -68,6 +69,7 @@ export const skills = [
 
   { name: "Git", category: "Tools & Workflow" },
   { name: "GitHub", category: "Tools & Workflow", implies: ["Git"] },
+  { name: "Postman", category: "Tools & Workflow" },
   { name: "VS Code", category: "Tools & Workflow" },
   { name: "REST APIs", category: "Tools & Workflow" },
   { name: "Vercel", category: "Tools & Workflow" },
@@ -78,4 +80,7 @@ export const skills = [
     implies: ["REST APIs"],
   },
   { name: "Linux", category: "Tools & Workflow" },
+
+  { name: "Object-Oriented Programming", category: "Software Engineering" },
+  { name: "System Architecture", category: "Software Engineering" },
 ] satisfies z.input<typeof skillsSchema>;
