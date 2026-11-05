@@ -49,8 +49,9 @@ jobs:
           done
           [ "$state" = success ] || { echo "::error::No Vercel preview after 10 minutes"; exit 1; }
 
-          # Vercel's branch alias: lowercase, other characters become "-".
-          slug=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g')
+          # Vercel's branch alias: lowercase, dots dropped (v1.0.0 -> v100),
+          # other characters become "-".
+          slug=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/\.//g; s/[^a-z0-9]+/-/g; s/^-|-$//g')
           host="$VERCEL_PROJECT-git-$slug-$VERCEL_TEAM"
           # Longer names are shortened with a hash, which is not predictable.
           [ ${#host} -le 63 ] || { echo "::error::Branch name too long for a predictable preview URL"; exit 1; }
