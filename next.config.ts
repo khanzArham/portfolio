@@ -40,6 +40,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  experimental: {
+    // Turbopack's disk cache kept serving an old globals.css after style
+    // changes, in `next dev` and in `next build` alike (2026-11-05). Every
+    // compile starts fresh instead: slower, but the CSS always matches.
+    turbopackFileSystemCacheForDev: false,
+    turbopackFileSystemCacheForBuild: false,
+  },
   turbopack: {
     rules: {
       "*.css": {
